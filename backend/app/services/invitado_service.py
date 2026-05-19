@@ -60,18 +60,19 @@ class InvitadoService:
         
         row = row.iloc[0]
         
-        # Handle boolean conversion
-        tiene_pareja = str(row['es_pareja']).lower() == 'true'
-        tiene_ninos = str(row['tiene_nino']).lower() == 'true'
         confirmo = row.get('confirmo', '')
+        acompanantes = str(row.get('acompanantes', '')) or ''
+        if acompanantes in ('nan', 'None', '') or not acompanantes.strip():
+            acompanantes = ''
+        confirmados = str(row.get('confirmados', '')) or ''
+        if confirmados in ('nan', 'None', '') or not confirmados.strip():
+            confirmados = ''
         
         return InvitacionResponse(
             nombre=row['nombre'],
             categoria=row['categoria'],
-            tiene_pareja=tiene_pareja,
-            nombre_pareja=row['nombre_pareja'] or None,
-            tiene_ninos=tiene_ninos,
-            nombres_ninos=row['nombres_ninos'] or None,
+            acompanantes=acompanantes,
+            confirmados=confirmados,
             confirmo=confirmo if confirmo else None,
             # Include config
             nombres_novios=config.get('nombres_novios'),
@@ -79,6 +80,8 @@ class InvitadoService:
             hora_ceremonia=config.get('hora_ceremonia'),
             lugar_ceremonia=config.get('lugar_ceremonia'),
             direccion_ceremonia=config.get('direccion_ceremonia'),
+            coord_ceremonia=config.get('coord_ceremonia'),
+            coord_recepcion=config.get('coord_recepcion'),
             imagen_ceremonia=config.get('imagen_ceremonia'),
             hora_recepcion=config.get('hora_recepcion'),
             lugar_recepcion=config.get('lugar_recepcion'),
@@ -95,7 +98,8 @@ class InvitadoService:
         codigo: str, 
         confirmo: str, 
         cantidad: int,
-        acompanantes: Optional[str] = None
+        asistentes: str = "[]",
+        restricciones: Optional[str] = None
     ) -> dict:
         """Submit RSVP confirmation."""
         df = self._load_csv()
@@ -107,8 +111,9 @@ class InvitadoService:
         # Update values
         df.loc[mask, 'confirmo'] = confirmo
         df.loc[mask, 'cantidad'] = cantidad
-        if acompanantes:
-            df.loc[mask, 'nombre_pareja'] = acompanantes
+        df.loc[mask, 'confirmados'] = asistentes
+        if restricciones:
+            df.loc[mask, 'restricciones'] = restricciones
         df.loc[mask, 'fecha_confirmacion'] = pd.Timestamp.now().isoformat()
         
         self._save_csv(df)
@@ -143,10 +148,8 @@ class InvitadoService:
                 codigo=row['codigo'],
                 nombre=row['nombre'],
                 categoria=row['categoria'],
-                es_pareja=str(row['es_pareja']).lower() == 'true',
-                nombre_pareja=row['nombre_pareja'] or None,
-                tiene_nino=str(row['tiene_nino']).lower() == 'true',
-                nombres_ninos=row['nombres_ninos'] or None,
+                acompanantes=str(row.get('acompanantes', '')) if str(row.get('acompanantes', '')) not in ('nan', 'None', '') else '',
+                confirmados=str(row.get('confirmados', '')) if str(row.get('confirmados', '')) not in ('nan', 'None', '') else '',
                 prioridad=row['prioridad'],
                 confirmo=row['confirmo'],
                 cantidad=row['cantidad'],
@@ -172,10 +175,7 @@ class InvitadoService:
             'codigo': nuevo_codigo,
             'nombre': nuevo.nombre,
             'categoria': nuevo.categoria,
-            'es_pareja': nuevo.es_pareja,
-            'nombre_pareja': nuevo.nombre_pareja,
-            'tiene_nino': nuevo.tiene_nino,
-            'nombres_ninos': nuevo.nombres_ninos,
+            'acompanantes': nuevo.acompanantes,
             'prioridad': nuevo.prioridad,
             'confirmo': 'pendiente',
             'cantidad': 0,
@@ -197,10 +197,7 @@ class InvitadoService:
         
         df.loc[mask, 'nombre'] = updates.nombre
         df.loc[mask, 'categoria'] = updates.categoria
-        df.loc[mask, 'es_pareja'] = updates.es_pareja
-        df.loc[mask, 'nombre_pareja'] = updates.nombre_pareja
-        df.loc[mask, 'tiene_nino'] = updates.tiene_nino
-        df.loc[mask, 'nombres_ninos'] = updates.nombres_ninos
+        df.loc[mask, 'acompanantes'] = updates.acompanantes
         df.loc[mask, 'prioridad'] = updates.prioridad
         
         self._save_csv(df)
@@ -211,10 +208,8 @@ class InvitadoService:
             codigo=row['codigo'],
             nombre=row['nombre'],
             categoria=row['categoria'],
-            es_pareja=str(row['es_pareja']).lower() == 'true',
-            nombre_pareja=row['nombre_pareja'] or None,
-            tiene_nino=str(row['tiene_nino']).lower() == 'true',
-            nombres_ninos=row['nombres_ninos'] or None,
+                            acompanantes=str(row.get('acompanantes', '')) if str(row.get('acompanantes', '')) not in ('nan', 'None', '') else '',
+                confirmados=str(row.get('confirmados', '')) if str(row.get('confirmados', '')) not in ('nan', 'None', '') else '',
             prioridad=row['prioridad'],
             confirmo=row['confirmo'],
             cantidad=row['cantidad'],

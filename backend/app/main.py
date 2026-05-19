@@ -46,7 +46,7 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 async def root():
     """Root endpoint."""
     return {
-        "message": settings.APP_NAME, 
+        "message": settings.APP_NAME,
         "status": "online",
         "version": settings.APP_VERSION
     }
@@ -56,8 +56,9 @@ async def root():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
-        "app.main:app", 
-        host="0.0.0.0", 
+        "app.main:app",
+        host="0.0.0.0",
         port=8000,
-        reload=True
+        reload=True,
+        reload_dirs=["app"]
     )

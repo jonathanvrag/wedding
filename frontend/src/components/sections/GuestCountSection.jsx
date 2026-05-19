@@ -19,7 +19,7 @@ export function GuestCountSection({ cantidad = 1 }) {
           <p className='text-xl text-secondary font-light'>
             Esta invitación es válida para{' '}
             <span className='font-bold text-primary px-2'>{cantidad}</span>{' '}
-            personas.
+            {cantidad === 1 ? 'persona.' : 'personas.'}
           </p>
         </Card>
       </div>

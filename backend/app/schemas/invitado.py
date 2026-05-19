@@ -11,14 +11,15 @@ from pydantic import BaseModel, ConfigDict
 class InvitacionResponse(BaseModel):
     """Response for invitation page."""
     model_config = ConfigDict(from_attributes=True)
-    
+
     nombre: str
     categoria: str
-    tiene_pareja: bool
-    nombre_pareja: Optional[str] = None
-    tiene_ninos: bool
-    nombres_ninos: Optional[str] = None
+    acompanantes: str = ""  # JSON array of companion names
+    confirmados: str = ""  # JSON array of confirmed attendee names
     confirmo: Optional[str] = None  # "si", "no", o None/empty
+    # Coordinates for map
+    coord_ceremonia: Optional[str] = None
+    coord_recepcion: Optional[str] = None
     # Config
     nombres_novios: Optional[str] = None
     fecha_evento: Optional[str] = None
@@ -41,7 +42,8 @@ class RSVPRequest(BaseModel):
     codigo: str
     confirmo: str  # "si" or "no"
     cantidad: int = 1
-    acompanantes: Optional[str] = None
+    asistentes: str = "[]"  # JSON array of confirmed attendee names
+    restricciones: Optional[str] = None  # dietary restrictions
 
 
 class RSVPResponse(BaseModel):
@@ -57,25 +59,20 @@ class NuevoInvitado(BaseModel):
     """New guest creation request."""
     nombre: str
     categoria: str = "Amigos de la novia"
-    es_pareja: bool = False
-    nombre_pareja: Optional[str] = None
-    tiene_nino: bool = False
-    nombres_ninos: Optional[str] = None
+    acompanantes: str = ""  # JSON array of companion names
     prioridad: str = "Importante"
 
 
 class InvitadoResponse(BaseModel):
     """Guest response."""
     model_config = ConfigDict(from_attributes=True)
-    
+
     id: str
     codigo: str
     nombre: str
     categoria: str
-    es_pareja: bool
-    nombre_pareja: Optional[str] = None
-    tiene_nino: bool
-    nombres_ninos: Optional[str] = None
+    acompanantes: str = ""  # JSON array of companion names
+    confirmados: str = ""  # JSON array of confirmed attendee names
     prioridad: str
     confirmo: str
     cantidad: int

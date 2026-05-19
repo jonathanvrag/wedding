@@ -54,7 +54,7 @@ export function DetailsSection({
           </div>
           <div className='pt-12'>
             <a
-              href='#'
+              href='#ubicacion'
               className='inline-flex items-center space-x-4 text-primary font-bold tracking-widest text-xs uppercase group'
             >
               <span>Ver ubicación en mapas</span>
@@ -100,7 +100,7 @@ export function DetailsSection({
           </div>
           <div className='pt-12'>
             <a
-              href='#'
+              href='#ubicacion'
               className='inline-flex items-center space-x-4 text-primary font-bold tracking-widest text-xs uppercase group'
             >
               <span>Ver ubicación en mapas</span>

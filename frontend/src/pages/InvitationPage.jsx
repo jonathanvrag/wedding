@@ -117,7 +117,14 @@ export default function InvitationPage() {
       
       <WelcomeSection mensaje={invitacion.mensaje_bienvenida} />
       
-      <GuestCountSection cantidad={invitacion.tiene_pareja ? 2 : 1} />
+      <GuestCountSection
+        cantidad={
+          1 +
+          (invitacion.acompanantes
+            ? JSON.parse(invitacion.acompanantes).length
+            : 0)
+        }
+      />
       
       <DetailsSection 
         horaCeremonia={invitacion.hora_ceremonia}
@@ -133,6 +140,10 @@ export default function InvitationPage() {
       <MapSection 
         lugarCeremonia={invitacion.lugar_ceremonia}
         direccionCeremonia={invitacion.direccion_ceremonia}
+        coordCeremonia={invitacion.coord_ceremonia}
+        lugarRecepcion={invitacion.lugar_recepcion}
+        direccionRecepcion={invitacion.direccion_recepcion}
+        coordRecepcion={invitacion.coord_recepcion}
       />
       
       <AccommodationSection hoteles={invitacion.hoteles} />
@@ -140,7 +151,8 @@ export default function InvitationPage() {
       <RsvpSection
         codigo={codigo}
         guestName={invitacion.nombre}
-        maxCantidad={invitacion.tiene_pareja ? 2 : 1}
+        acompanantes={invitacion.acompanantes}
+        confirmados={invitacion.confirmados}
         fechaLimite={formatDateToSpanish(invitacion.fecha_limite_confirmacion)}
         yaConfirmo={invitacion.confirmo === 'si'}
         fechaLimiteISO={invitacion.fecha_limite_confirmacion}

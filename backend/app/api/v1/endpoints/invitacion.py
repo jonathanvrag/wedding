@@ -71,7 +71,8 @@ async def submit_rsvp(request: RSVPRequest):
             codigo=request.codigo,
             confirmo=request.confirmo,
             cantidad=request.cantidad,
-            acompanantes=request.acompanantes
+            asistentes=request.asistentes,
+            restricciones=request.restricciones
         )
         return RSVPResponse(**result)
     except ValueError as e:

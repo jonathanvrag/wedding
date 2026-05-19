@@ -1,39 +1,56 @@
 /**
  * AddGuestModal - Modal para agregar nuevos invitados
- * Formulario con validaciones para crear invitados
+ * Permite agregar múltiples acompañantes de forma individual
  */
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Plus, X } from 'lucide-react'
 
 export function AddGuestModal({ isOpen, onClose, onSubmit }) {
   const [newGuest, setNewGuest] = useState({
     nombre: '',
     categoria: 'Amigos de la novia',
-    es_pareja: false,
-    nombre_pareja: '',
-    tiene_nino: false,
-    nombres_ninos: '',
+    acompanantes: [], // array of companion names
     prioridad: 'Importante',
   })
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    onSubmit(newGuest)
-  }
-
-  const updateField = (field, value) => {
-    setNewGuest((prev) => ({ ...prev, [field]: value }))
+    const payload = {
+      ...newGuest,
+      acompanantes: JSON.stringify(newGuest.acompanantes.filter(Boolean)),
+    }
+    onSubmit(payload)
   }
 
   const resetForm = () => {
     setNewGuest({
       nombre: '',
       categoria: 'Amigos de la novia',
-      es_pareja: false,
-      nombre_pareja: '',
-      tiene_nino: false,
-      nombres_ninos: '',
+      acompanantes: [],
       prioridad: 'Importante',
+    })
+  }
+
+  const addCompanion = () => {
+    setNewGuest((prev) => ({
+      ...prev,
+      acompanantes: [...prev.acompanantes, ''],
+    }))
+  }
+
+  const removeCompanion = (index) => {
+    setNewGuest((prev) => ({
+      ...prev,
+      acompanantes: prev.acompanantes.filter((_, i) => i !== index),
+    }))
+  }
+
+  const updateCompanion = (index, value) => {
+    setNewGuest((prev) => {
+      const updated = [...prev.acompanantes]
+      updated[index] = value
+      return { ...prev, acompanantes: updated }
     })
   }
 
@@ -65,13 +82,15 @@ export function AddGuestModal({ isOpen, onClose, onSubmit }) {
               <form onSubmit={handleSubmit} className='space-y-4'>
                 <div>
                   <label className='block text-sm text-secondary mb-1'>
-                    Nombre
+                    Nombre del invitado
                   </label>
                   <input
                     type='text'
                     required
                     value={newGuest.nombre}
-                    onChange={(e) => updateField('nombre', e.target.value)}
+                    onChange={(e) =>
+                      setNewGuest({ ...newGuest, nombre: e.target.value })
+                    }
                     className='input'
                     placeholder='Juan Pérez'
                   />
@@ -83,7 +102,9 @@ export function AddGuestModal({ isOpen, onClose, onSubmit }) {
                   </label>
                   <select
                     value={newGuest.categoria}
-                    onChange={(e) => updateField('categoria', e.target.value)}
+                    onChange={(e) =>
+                      setNewGuest({ ...newGuest, categoria: e.target.value })
+                    }
                     className='input'
                   >
                     <option value='Familia del Novio'>Familia del Novio</option>
@@ -103,7 +124,9 @@ export function AddGuestModal({ isOpen, onClose, onSubmit }) {
                   </label>
                   <select
                     value={newGuest.prioridad}
-                    onChange={(e) => updateField('prioridad', e.target.value)}
+                    onChange={(e) =>
+                      setNewGuest({ ...newGuest, prioridad: e.target.value })
+                    }
                     className='input'
                   >
                     <option value='Indispensable'>Indispensable</option>
@@ -112,65 +135,51 @@ export function AddGuestModal({ isOpen, onClose, onSubmit }) {
                   </select>
                 </div>
 
-                <div className='flex items-center gap-2'>
-                  <input
-                    type='checkbox'
-                    id='es_pareja'
-                    checked={newGuest.es_pareja}
-                    onChange={(e) => updateField('es_pareja', e.target.checked)}
-                    className='rounded border-primary/30'
-                  />
-                  <label htmlFor='es_pareja' className='text-sm text-secondary'>
-                    Tiene acompañante
-                  </label>
-                </div>
-
-                {newGuest.es_pareja && (
-                  <div>
-                    <label className='block text-sm text-secondary mb-1'>
-                      Nombre del acompañante
+                {/* Acompañantes */}
+                <div className='pt-2'>
+                  <div className='flex items-center justify-between mb-3'>
+                    <label className='text-sm text-secondary font-medium'>
+                      Acompañantes
                     </label>
-                    <input
-                      type='text'
-                      value={newGuest.nombre_pareja}
-                      onChange={(e) =>
-                        updateField('nombre_pareja', e.target.value)
-                      }
-                      className='input'
-                    />
+                    <button
+                      type='button'
+                      onClick={addCompanion}
+                      className='flex items-center gap-1.5 text-xs text-primary font-bold uppercase tracking-wider hover:text-primary/80 transition-colors'
+                    >
+                      <Plus className='w-3.5 h-3.5' />
+                      Agregar acompañante
+                    </button>
                   </div>
-                )}
 
-                <div className='flex items-center gap-2'>
-                  <input
-                    type='checkbox'
-                    id='tiene_nino'
-                    checked={newGuest.tiene_nino}
-                    onChange={(e) =>
-                      updateField('tiene_nino', e.target.checked)
-                    }
-                    className='rounded border-primary/30'
-                  />
-                  <label htmlFor='tiene_nino' className='text-sm text-secondary'>
-                    Tiene niños
-                  </label>
+                  {newGuest.acompanantes.length === 0 && (
+                    <p className='text-xs text-tertiary/60 italic'>
+                      Sin acompañantes. El invitado asistirá solo.
+                    </p>
+                  )}
+
+                  <div className='space-y-2'>
+                    {newGuest.acompanantes.map((name, index) => (
+                      <div key={index} className='flex items-center gap-2'>
+                        <input
+                          type='text'
+                          value={name}
+                          onChange={(e) =>
+                            updateCompanion(index, e.target.value)
+                          }
+                          className='input flex-1'
+                          placeholder={`Nombre del acompañante ${index + 1}`}
+                        />
+                        <button
+                          type='button'
+                          onClick={() => removeCompanion(index)}
+                          className='p-2 text-secondary/50 hover:text-red-500 transition-colors'
+                        >
+                          <X className='w-4 h-4' />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-
-                {newGuest.tiene_nino && (
-                  <div>
-                    <label className='block text-sm text-secondary mb-1'>
-                      Nombres de los niños
-                    </label>
-                    <input
-                      type='text'
-                      value={newGuest.nombres_ninos}
-                      onChange={(e) =>
-                        updateField('nombres_ninos', e.target.value)
-                      }
-                      className='input'
-                    />
-                  </div>
-                )}
 
                 <div className='flex gap-3 pt-4'>
                   <button
