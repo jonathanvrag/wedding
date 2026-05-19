@@ -1,0 +1,14 @@
+{
+  "nombres_novios": "Jonathan & Duniechka",
+  "fecha_evento": "08 de agosto de 2026",
+  "hora_ceremonia": "5:00 PM",
+  "lugar_ceremonia": "Parroqu\u00eda San Joaqu\u00edn",
+  "direccion_ceremonia": "Medell\u00edn, Colombia",
+  "hora_recepcion": "8:00 PM",
+  "lugar_recepcion": "San Joaqu\u00edn - sede la 80",
+  "direccion_recepcion": "Medell\u00edn, Colombia",
+  "fecha_limite_confirmacion": "2026-01-02",
+  "mensaje_bienvenida": "Queridos amigos y familia, no hay nada que nos haga m\u00e1s ilusi\u00f3n que compartir el d\u00eda m\u00e1s importante de nuestras vidas con las personas que nos han visto crecer y amarnos. Queremos que esta celebraci\u00f3n sea un reflejo de nuestra gratitud por vuestro cari\u00f1o incondicional. Os esperamos para brindar por el amor, la risa y el futuro.",
+  "hoteles": "[{\"name\": \"Hotel El Mirador\", \"dist\": \"A 5 min del lugar\", \"desc\": \"Un espacio boutique con vistas incre\\u00edble.\"}, {\"name\": \"Villa Serena\", \"dist\": \"A 10 min del lugar\", \"desc\": \"Encanto r\\u00fastico y jardines privados.\"}, {\"name\": \"Grand Plaza Suites\", \"dist\": \"A 15 min del lugar\", \"desc\": \"Opci\\u00f3n moderna en el centro hist\\u00f3rico.\"}]",
+  "faqs": "[{\"q\":\"\u00bfCu\u00e1l es el c\u00f3digo de vestimenta?\",\"a\":\"El Dress Code para nuestra boda es formal.\"},{\"q\":\"\u00bfPodemos ir con ni\u00f1os?\",\"a\":\"Aunque nos encantan los ni\u00f1os, hemos decidido celebrar una boda mayores de 13 a\u00f1os.\"},{\"q\":\"\u00bfHabr\u00e1 servicio de transporte?\",\"a\":\"No, hemos buscado que la iglesia quede muy cerca de la recepci\u00f3n para el f\u00e1cil desplazamiento.\"}]"
+}

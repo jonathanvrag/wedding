@@ -1,0 +1,16 @@
+{
+  "nombres_novios": "Jonathan & Duniechka",
+  "fecha_evento": "08 de agosto de 2026",
+  "hora_ceremonia": "5:00 PM",
+  "lugar_ceremonia": "Parroquía San Joaquín",
+  "direccion_ceremonia": "Medellín, Colombia",
+  "imagen_ceremonia": "",
+  "hora_recepcion": "8:00 PM",
+  "lugar_recepcion": "San Joaquín - sede la 80",
+  "direccion_recepcion": "Medellín, Colombia",
+  "imagen_recepcion": "",
+  "fecha_limite_confirmacion": "2026-01-01",
+  "mensaje_bienvenida": "Queridos amigos y familia, no hay nada que nos haga más ilusión que compartir el día más importante de nuestras vidas con las personas que nos han visto crecer y amarnos. Queremos que esta celebración sea un reflejo de nuestra gratitud por vuestro cariño incondicional. Os esperamos paraivar por el amor, la risa y el futuro.",
+  "hoteles": "[{\"name\": \"Hotel El Mirador\", \"dist\": \"A 5 min del lugar\", \"desc\": \"Un espacio boutique con vistas incredible.\", \"imagen\": \"\", \"url\": \"\"}, {\"name\": \"Villa Serena\", \"dist\": \"A 10 min del lugar\", \"desc\": \"Encanto rústico y jardines privados.\", \"imagen\": \"\", \"url\": \"\"}, {\"name\": \"Grand Plaza Suites\", \"dist\": \"A 15 min del lugar\", \"desc\": \"Opción moderna en el centro histórico.\", \"imagen\": \"\", \"url\": \"\"}]",
+  "faqs": "[{\"q\": \"¿Cuál es el código de vestimenta?\", \"a\": \"El Dress Code para nuestra boda es formal. Para los hombres, recomendamos traje; para las mujeres, vestido largo o de córtel.\"}, {\"q\": \"¿Podemos ir con niños?\", \"a\": \"Aunque nos encantan los niños, hemos decidido celebrar una boda solo para adultos para que todos podáis disfrutar de la noche sin preocupaciones.\"}, {\"q\": \"¿Habrá servicio de transporte?\", \"a\": \"No, hemos buscado que la iglesia quede muy cerca de la recepción para el fácil desplazamiento.\"}]"
+}

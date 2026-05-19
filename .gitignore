@@ -1,0 +1,47 @@
+# ============ DEPENDENCIES ============
+node_modules/
+.venv/
+venv/
+env/
+
+# ============ PYTHON ============
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ============ ENVIRONMENT VARIABLES ============
+# All .env files — secrets should NEVER be committed
+.env
+.env.local
+.env.production
+
+# ============ BUILD OUTPUTS ============
+dist/
+build/
+
+# ============ RUNTIME ARTIFACTS ============
+*.log
+
+# =========== DATA FILES ============
+# Import source — not the working CSV database
+Invitados*.csv
+
+# ============ OS FILES ============
+.DS_Store
+Thumbs.db
+
+# ============ EDITOR CONFIGS ============
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============ SCREENSHOTS / MEDIA ============
+# Only specific artifact files — NOT blanket image exclusions
+# (the wedding site may have image assets that need tracking)
+screen.png
