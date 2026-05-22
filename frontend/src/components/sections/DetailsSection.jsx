@@ -19,7 +19,7 @@ export function DetailsSection({
 }) {
   return (
     <Section id='detalles'>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-24 items-start'>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-[101px] items-start'>
         {/* Ceremony */}
         <div className='space-y-12'>
           <div className='relative'>

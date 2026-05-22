@@ -17,6 +17,7 @@ import { motion } from 'framer-motion'
 // Esto hace que el archivo sea legible y mantenible
 import { BotanicalTop, BotanicalBottom } from '../components/Botanical'
 import { Navigation, Footer } from '../components/layout'
+import { AudioPlayer } from '../components/AudioPlayer'
 import { 
   HeroSection, 
   WelcomeSection, 
@@ -161,6 +162,8 @@ export default function InvitationPage() {
       <FaqSection faqs={invitacion.faqs} />
       
       <Footer nombresNovios={invitacion.nombres_novios} />
+
+      <AudioPlayer src={invitacion.audio_url} />
     </div>
   )
 }

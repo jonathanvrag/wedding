@@ -90,7 +90,8 @@ class InvitadoService:
             fecha_limite_confirmacion=config.get('fecha_limite_confirmacion'),
             mensaje_bienvenida=config.get('mensaje_bienvenida'),
             hoteles=config.get('hoteles'),
-            faqs=config.get('faqs')
+            faqs=config.get('faqs'),
+            audio_url=config.get('audio_url')
         )
     
     def submit_rsvp(
@@ -291,7 +292,8 @@ class InvitadoService:
                 {"q": "¿Cuál es el código de vestimenta?", "a": "El Dress Code para nuestra boda es formal. Para los hombres, recomendamos traje; para las mujeres, vestido largo o de córtel."},
                 {"q": "¿Podemos ir con niños?", "a": "Aunque nos encantan los niños, hemos decidido celebrar una boda solo para adultos para que todos podáis disfrutar de la noche sin preocupaciones."},
                 {"q": "¿Habrá servicio de transporte?", "a": "Sí, pondremos a vuestra disposición un servicio de autobuses que saldrá desde el centro de la ciudad."}
-            ])
+            ]),
+            "audio_url": ""
         }
     
     def save_config(self, config: dict) -> dict:

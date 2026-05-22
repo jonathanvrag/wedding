@@ -2,7 +2,9 @@
 Admin endpoints with authentication.
 Following fastapi-templates endpoint pattern with dependencies.
 """
-from fastapi import APIRouter, Depends, HTTPException, status
+import shutil
+from pathlib import Path
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import List, Optional
 
@@ -143,3 +145,26 @@ async def update_config(
 ):
     """Update evento configuration."""
     return invitado_service.save_config(config)
+
+
+@router.post("/upload-audio")
+async def upload_audio(
+    file: UploadFile = File(...),
+    current_admin: str = Depends(get_current_admin)
+):
+    """Upload audio file (MP3). Replaces existing one."""
+    static_dir = Path(__file__).parent.parent.parent.parent / "static"
+    static_dir.mkdir(exist_ok=True)
+
+    ext = Path(file.filename).suffix if file.filename else ".mp3"
+    dest = static_dir / f"audio{ext}"
+
+    with open(dest, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    audio_url = f"/static/audio{ext}"
+    config = invitado_service.get_config()
+    config["audio_url"] = audio_url
+    invitado_service.save_config(config)
+
+    return {"url": audio_url, "message": "Audio subido correctamente"}

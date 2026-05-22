@@ -35,6 +35,7 @@ class InvitacionResponse(BaseModel):
     mensaje_bienvenida: Optional[str] = None
     hoteles: Optional[str] = None
     faqs: Optional[str] = None
+    audio_url: Optional[str] = None
 
 
 class RSVPRequest(BaseModel):
@@ -116,3 +117,5 @@ class EventoConfig(BaseModel):
     fecha_limite_confirmacion: str = "1 de Mayo"
     mensaje_bienvenida: str = "Queridos amigos y familia, no hay nada que nos haga más ilusión que compartir el día más importante de nuestras vidas con las personas que nos han visto crecer y amarnos."
     hoteles: str = ""  # JSON string con array de hoteles
+    faqs: str = ""
+    audio_url: str = ""

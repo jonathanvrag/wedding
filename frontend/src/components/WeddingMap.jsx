@@ -52,6 +52,37 @@ function FitBounds({ markers }) {
 }
 
 /**
+ * Recenter button that re-fits the map to all markers
+ */
+function RecenterControl({ markers }) {
+  const map = useMap()
+
+  const handleRecenter = () => {
+    if (markers.length === 0) return
+    const bounds = L.latLngBounds(markers.map(m => m.coords))
+    map.fitBounds(bounds, { padding: [60, 60], maxZoom: 16 })
+  }
+
+  return (
+    <div className='absolute top-4 right-4 z-[1000]'>
+      <button
+        onClick={handleRecenter}
+        className='bg-white w-10 h-10 rounded-lg shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors'
+        title='Centrar mapa'
+      >
+        <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='#5b6143' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+          <circle cx='12' cy='12' r='3'/>
+          <path d='M12 2v4'/>
+          <path d='M12 18v4'/>
+          <path d='M2 12h4'/>
+          <path d='M18 12h4'/>
+        </svg>
+      </button>
+    </div>
+  )
+}
+
+/**
  * WeddingMap - renders an interactive Leaflet map
  *
  * Props:
@@ -67,7 +98,7 @@ export function WeddingMap({ ceremony, reception, className = '' }) {
   const defaultZoom = 13
 
   return (
-    <div className={`${className}`}>
+    <div className={`relative ${className}`}>
       <MapContainer
         center={defaultCenter}
         zoom={defaultZoom}
@@ -80,6 +111,7 @@ export function WeddingMap({ ceremony, reception, className = '' }) {
         />
 
         <FitBounds markers={markers} />
+        <RecenterControl markers={markers} />
 
         {ceremony && (
           <Marker

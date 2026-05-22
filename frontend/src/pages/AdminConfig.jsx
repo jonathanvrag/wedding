@@ -21,6 +21,7 @@ import {
   AlertCircle,
   HelpCircle,
   ArrowLeft,
+  Music,
 } from 'lucide-react'
 
 // Componentes separados
@@ -249,6 +250,50 @@ export default function AdminConfig() {
               faqs={config?.faqs}
               onChange={(v) => updateField('faqs', v)}
             />
+          </div>
+        </ConfigSection>
+
+        {/* Música */}
+        <ConfigSection title='Música de Fondo' icon={Music}>
+          <div className='md:col-span-2 space-y-3'>
+            <label className='block text-sm text-secondary mb-1'>
+              Archivo de audio (MP3)
+            </label>
+            <input
+              type='file'
+              accept='.mp3,.ogg,.wav'
+              onChange={async (e) => {
+                const file = e.target.files?.[0]
+                if (!file) return
+                const form = new FormData()
+                form.append('file', file)
+                try {
+                  const res = await fetch(`${API_URL}/admin/upload-audio`, {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${token}` },
+                    body: form,
+                  })
+                  if (!res.ok) throw new Error('Error al subir')
+                  const data = await res.json()
+                  updateField('audio_url', data.url)
+                  toast('Audio subido correctamente')
+                } catch {
+                  toast('Error al subir el audio', 'error')
+                }
+              }}
+              className='block w-full text-sm text-secondary file:mr-4 file:py-2 file:px-6 file:rounded-full file:border-0 file:bg-primary file:text-surface file:text-xs file:font-bold file:uppercase file:tracking-wider hover:file:bg-primary-light transition-colors'
+            />
+            {config?.audio_url && (
+              <div className='flex items-center gap-2 text-xs text-secondary'>
+                <span>✓ Audio configurado</span>
+                <button
+                  onClick={() => updateField('audio_url', '')}
+                  className='text-error hover:underline'
+                >
+                  Eliminar
+                </button>
+              </div>
+            )}
           </div>
         </ConfigSection>
 

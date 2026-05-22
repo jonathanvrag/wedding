@@ -221,7 +221,7 @@ export function RsvpSection({
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className='text-center p-20 bg-surface-container-lowest/5 rounded-[2rem]'
+            className='text-center p-20 bg-surface-container-lowest/5 rounded-[2rem] backdrop-blur-sm'
           >
             <Flower2 className='mx-auto mb-8 w-20 h-20' />
             <h3 className='text-4xl font-serif mb-6'>¡Gracias!</h3>
@@ -245,10 +245,26 @@ export function RsvpSection({
             </div>
           </motion.div>
         ) : (
-          <form
-            onSubmit={handleSubmit}
-            className='max-w-2xl mx-auto space-y-10 bg-surface-container-lowest/5 p-12 md:p-16 rounded-[2rem] backdrop-blur-md border border-surface/10'
-          >
+          <div className='relative max-w-2xl mx-auto'>
+            {/* Textura floral de fondo */}
+            <div
+              className='absolute inset-0 rounded-[2rem] opacity-40 pointer-events-none'
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.15'%3E%3Cpath d='M40 10c-5 0-10 5-10 10 0 3 2 6 4 8l6 6 6-6c2-2 4-5 4-8 0-5-5-10-10-10zm0 4c3 0 6 3 6 6 0 2-1 4-3 5.5L40 29l-3-3.5C35 24 34 22 34 20c0-3 3-6 6-6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                backgroundRepeat: 'repeat',
+                backgroundSize: '80px 80px',
+              }}
+            />
+            {/* Brillo central */}
+            <div className='absolute inset-0 rounded-[2rem] bg-gradient-to-br from-surface/5 via-transparent to-primary/20 pointer-events-none' />
+            {/* Flor decorativa esquina */}
+            <Flower2 className='absolute -top-8 -right-8 w-28 h-28 text-surface/10 stroke-[0.5px] pointer-events-none rotate-12' />
+            <Flower2 className='absolute -bottom-6 -left-6 w-20 h-20 text-surface/[0.07] stroke-[0.5px] pointer-events-none -rotate-12' />
+
+            <form
+              onSubmit={handleSubmit}
+              className='relative space-y-10 bg-surface-container-lowest/10 p-12 md:p-16 rounded-[2rem] backdrop-blur-md border border-surface/15 shadow-xl shadow-primary/30'
+            >
             {/* Lista de personas */}
             <div className='space-y-4'>
               <label className='block text-xs uppercase tracking-[0.2em] opacity-60 font-bold text-center mb-6'>
@@ -315,6 +331,7 @@ export function RsvpSection({
               </motion.button>
             </div>
           </form>
+          </div>
         )}
       </div>
 
