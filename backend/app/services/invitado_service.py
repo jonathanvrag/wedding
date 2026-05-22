@@ -229,21 +229,33 @@ class InvitadoService:
         
         return True
     
+    def _count_people(self, row) -> int:
+        """Count total people (main guest + companions) for a row."""
+        import json
+        count = 1
+        try:
+            comps = json.loads(row.get('acompanantes', '[]'))
+            if isinstance(comps, list):
+                count += len([c for c in comps if c])
+        except (json.JSONDecodeError, TypeError):
+            pass
+        return count
+
     def get_stats(self) -> dict:
-        """Get RSVP statistics."""
+        """Get RSVP statistics counting actual people (not just groups)."""
         df = self._load_csv()
-        
-        total = len(df)
-        confirmados = len(df[df['confirmo'] == 'si'])
-        rechazados = len(df[df['confirmo'] == 'no'])
-        pendientes = len(df[df['confirmo'] == 'pendiente'])
-        
+
+        people_total = sum(self._count_people(row) for _, row in df.iterrows())
+        people_confirmados = sum(self._count_people(row) for _, row in df[df['confirmo'] == 'si'].iterrows())
+        people_rechazados = sum(self._count_people(row) for _, row in df[df['confirmo'] == 'no'].iterrows())
+        people_pendientes = sum(self._count_people(row) for _, row in df[df['confirmo'] == 'pendiente'].iterrows())
+
         return {
-            "total": total,
-            "confirmados": confirmados,
-            "rechazados": rechazados,
-            "pendientes": pendientes,
-            "tasa_confirmacion": round(confirmados / total * 100, 1) if total > 0 else 0
+            "total": people_total,
+            "confirmados": people_confirmados,
+            "rechazados": people_rechazados,
+            "pendientes": people_pendientes,
+            "tasa_confirmacion": round(people_confirmados / people_total * 100, 1) if people_total > 0 else 0
         }
     
     def get_config(self) -> dict:

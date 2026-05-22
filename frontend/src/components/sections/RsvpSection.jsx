@@ -360,11 +360,7 @@ function PersonToggle({ name, va, onToggle, isMain = false }) {
           >
             {name}
           </span>
-          {isMain && (
-            <span className='ml-3 text-[10px] uppercase tracking-widest bg-surface/10 px-2 py-0.5 rounded-full opacity-60'>
-              Invitado
-            </span>
-          )}
+
         </div>
       </div>
 
