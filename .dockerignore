@@ -7,3 +7,4 @@ __pycache__
 venv
 backups
 *.backup.csv
+package-lock.json
