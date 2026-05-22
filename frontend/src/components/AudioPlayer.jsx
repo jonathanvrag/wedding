@@ -4,34 +4,48 @@ import { Music, VolumeX } from 'lucide-react'
 export function AudioPlayer({ src }) {
   const audioRef = useRef(null)
   const [playing, setPlaying] = useState(false)
-  const [userInteracted, setUserInteracted] = useState(false)
 
   useEffect(() => {
     if (!src || !audioRef.current) return
 
-    const tryAutoplay = () => {
+    let started = false
+
+    const play = () => {
+      if (started) return
+      started = true
       audioRef.current.volume = 0.3
       audioRef.current.loop = true
-      audioRef.current.play().then(() => setPlaying(true)).catch(() => {})
+      audioRef.current.play()
+        .then(() => {
+          setPlaying(true)
+          document.removeEventListener('click', handleClick)
+          document.removeEventListener('scroll', handleScroll)
+        })
+        .catch(() => { started = false })
     }
 
-    if (userInteracted) {
-      tryAutoplay()
-    } else {
-      const handler = () => {
-        setUserInteracted(true)
-        tryAutoplay()
-        document.removeEventListener('click', handler)
-        document.removeEventListener('touchstart', handler)
-      }
-      document.addEventListener('click', handler)
-      document.addEventListener('touchstart', handler)
-      return () => {
-        document.removeEventListener('click', handler)
-        document.removeEventListener('touchstart', handler)
-      }
+    const handleClick = () => play()
+
+    const handleScroll = () => {
+      audioRef.current.volume = 0.3
+      audioRef.current.loop = true
+      audioRef.current.play()
+        .then(() => {
+          setPlaying(true)
+          document.removeEventListener('click', handleClick)
+          document.removeEventListener('scroll', handleScroll)
+          started = true
+        })
+        .catch(() => {})
     }
-  }, [src, userInteracted])
+
+    document.addEventListener('click', handleClick)
+    document.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      document.removeEventListener('click', handleClick)
+      document.removeEventListener('scroll', handleScroll)
+    }
+  }, [src])
 
   const toggle = () => {
     if (!audioRef.current) return
@@ -50,10 +64,10 @@ export function AudioPlayer({ src }) {
       <audio ref={audioRef} src={src} preload='auto' />
       <button
         onClick={toggle}
-        className='fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-surface-container-lowest shadow-lg flex items-center justify-center hover:scale-105 transition-all'
+        className='fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-primary shadow-lg flex items-center justify-center hover:scale-105 transition-all'
         title={playing ? 'Pausar música' : 'Reproducir música'}
       >
-        {playing ? <Music className='w-5 h-5 text-primary' /> : <VolumeX className='w-5 h-5 text-secondary' />}
+        {playing ? <Music className='w-5 h-5 text-surface' /> : <VolumeX className='w-5 h-5 text-surface' />}
       </button>
     </>
   )
