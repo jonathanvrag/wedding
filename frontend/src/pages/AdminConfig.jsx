@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { API_URL } from '../lib/utils'
+import { toast, ToastContainer } from '../components/ui/Toast'
 import {
   Settings,
   Heart,
@@ -32,7 +33,6 @@ export default function AdminConfig() {
   const [config, setConfig] = useState(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
   const [error, setError] = useState(null)
 
   const token = localStorage.getItem('admin_token')
@@ -64,7 +64,6 @@ export default function AdminConfig() {
   const handleSave = async () => {
     setSaving(true)
     setError(null)
-    setSaved(false)
 
     try {
       const res = await fetch(`${API_URL}/admin/config`, {
@@ -77,9 +76,9 @@ export default function AdminConfig() {
       })
 
       if (!res.ok) throw new Error('Error al guardar')
-      setSaved(true)
-      setTimeout(() => setSaved(false), 3000)
+      toast('Configuración guardada correctamente')
     } catch (err) {
+      toast(err.message, 'error')
       setError(err.message)
     } finally {
       setSaving(false)
@@ -141,17 +140,6 @@ export default function AdminConfig() {
             <AlertCircle size={18} />
             {error}
           </div>
-        )}
-
-        {/* Success */}
-        {saved && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className='mb-6 p-4 bg-green-50 text-green-600 rounded-lg flex items-center gap-2'
-          >
-            ✓ Configuración guardada correctamente
-          </motion.div>
         )}
 
         {/* Novios */}
@@ -288,6 +276,7 @@ export default function AdminConfig() {
           </button>
         </div>
       </div>
+      <ToastContainer />
     </div>
   )
 }

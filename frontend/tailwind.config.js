@@ -15,6 +15,9 @@ export default {
         'surface-container-lowest': '#ffffff',
         secondary: '#615f50',
         tertiary: '#675c5a',
+        success: '#5a7a4a',
+        error: '#9a5050',
+        warning: '#b08040',
         'on-surface': '#1a1c1a',
       },
       fontFamily: {

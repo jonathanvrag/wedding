@@ -8,6 +8,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { API_URL } from '../lib/utils'
 import { Settings } from 'lucide-react'
+import { toast, ToastContainer } from '../components/ui/Toast'
 
 // Componentes separados
 import { StatCard } from '../components/admin/StatCard'
@@ -29,8 +30,7 @@ const CATEGORIAS = [
 
 const ESTADOS = [
   { value: '', label: 'Todos' },
-  { value: 'si', label: 'Confirmados' },
-  { value: 'no', label: 'Rechazados' },
+  { value: 'completado', label: 'Completados' },
   { value: 'pendiente', label: 'Pendientes' },
 ]
 
@@ -114,7 +114,8 @@ export default function AdminDashboard() {
   const filteredInvitados = useMemo(() => {
     return invitados.filter((inv) => {
       if (filtroCategoria && inv.categoria !== filtroCategoria) return false
-      if (filtroConfirmo && inv.confirmo !== filtroConfirmo) return false
+      if (filtroConfirmo === 'completado' && inv.confirmo === 'pendiente') return false
+      if (filtroConfirmo && filtroConfirmo !== 'completado' && inv.confirmo !== filtroConfirmo) return false
       if (search && !inv.nombre.toLowerCase().includes(search.toLowerCase()))
         return false
       return true
@@ -133,10 +134,11 @@ export default function AdminDashboard() {
   const handleAddGuest = async (guestData) => {
     try {
       await addGuest(guestData)
+      toast('Invitado agregado correctamente')
       setShowAddModal(false)
       fetchData()
     } catch (err) {
-      alert(err.message)
+      toast(err.message, 'error')
     }
   }
 
@@ -180,11 +182,10 @@ export default function AdminDashboard() {
 
       <div className='max-w-6xl mx-auto px-4 py-8'>
         {/* Stats */}
-        <div className='grid grid-cols-2 md:grid-cols-4 gap-4 mb-8'>
+        <div className='grid grid-cols-2 md:grid-cols-3 gap-4 mb-8'>
           <StatCard label='Total' value={stats.total} color='primary' />
-          <StatCard label='Confirmados' value={stats.confirmados} color='success' />
+          <StatCard label='Completados' value={(stats.confirmados || 0) + (stats.rechazados || 0)} color='success' />
           <StatCard label='Pendientes' value={stats.pendientes} color='warning' />
-          <StatCard label='Rechazados' value={stats.rechazados} color='error' />
         </div>
 
         {/* Filters */}
@@ -237,6 +238,7 @@ export default function AdminDashboard() {
         onClose={() => setShowAddModal(false)}
         onSubmit={handleAddGuest}
       />
+      <ToastContainer />
     </div>
   )
 }

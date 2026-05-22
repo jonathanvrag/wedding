@@ -6,7 +6,11 @@
  *   🔴 Rojo   → rechazó
  *   🟡 Amarillo → pendiente / sin datos
  */
+import { useState } from 'react'
 import { Badge } from '../ui/Badge'
+import { Copy, Check } from 'lucide-react'
+
+const INVITE_BASE = 'https://invitacion.jonthanvera.dev'
 
 function parseList(str) {
   if (!str) return []
@@ -27,20 +31,20 @@ function getPersonStatus(name, confirmados, hasData) {
 }
 
 const BG_CLASSES = {
-  confirmed: 'bg-green-100 dark:bg-green-900/30',
-  declined: 'bg-red-100 dark:bg-red-900/30',
-  pending: 'bg-amber-100 dark:bg-amber-900/30',
+  confirmed: 'bg-green-200 dark:bg-green-900/50',
+  declined: 'bg-red-200 dark:bg-red-900/50',
+  pending: 'bg-amber-200 dark:bg-amber-900/50',
 }
 
 const BORDER_CLASSES = {
-  confirmed: 'border-l-green-500',
-  declined: 'border-l-red-400',
-  pending: 'border-l-amber-500',
+  confirmed: 'border-l-green-600',
+  declined: 'border-l-red-500',
+  pending: 'border-l-amber-600',
 }
 
 const TEXT_CLASSES = {
   confirmed: 'text-green-800 dark:text-green-200',
-  declined: 'text-red-700 dark:text-red-300 line-through',
+  declined: 'text-red-800 dark:text-red-200 line-through',
   pending: 'text-amber-800 dark:text-amber-200',
 }
 
@@ -57,6 +61,39 @@ function PersonBadge({ name, status }) {
   )
 }
 
+function CopyButton({ url }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async (e) => {
+    e.stopPropagation()
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {
+      // fallback
+      const input = document.createElement('input')
+      input.value = url
+      document.body.appendChild(input)
+      input.select()
+      document.execCommand('copy')
+      document.body.removeChild(input)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    }
+  }
+
+  return (
+    <button
+      onClick={handleCopy}
+      className='p-1.5 rounded-md transition-colors hover:bg-surface-container-low text-secondary hover:text-primary'
+      title='Copiar URL'
+    >
+      {copied ? <Check className='w-3.5 h-3.5 text-success' /> : <Copy className='w-3.5 h-3.5' />}
+    </button>
+  )
+}
+
 export function GuestTable({ guests, onRowClick }) {
   const getCategoriaBadge = (cat) => {
     const badges = {
@@ -68,22 +105,12 @@ export function GuestTable({ guests, onRowClick }) {
     return badges[cat] || 'default'
   }
 
-  const getConfirmoBadge = (confirmo) => {
-    const badges = {
-      si: 'success',
-      no: 'error',
-      pendiente: 'default',
-    }
-    return badges[confirmo] || 'default'
+  const confirmoVariant = (confirmo) => {
+    return confirmo === 'pendiente' ? 'default' : 'success'
   }
 
-  const getConfirmoLabel = (confirmo) => {
-    const labels = {
-      si: 'Confirmado',
-      no: 'No va',
-      pendiente: 'Pendiente',
-    }
-    return labels[confirmo] || confirmo
+  const confirmoLabel = (confirmo) => {
+    return confirmo === 'pendiente' ? 'Pendiente' : 'Completado'
   }
 
   return (
@@ -95,7 +122,7 @@ export function GuestTable({ guests, onRowClick }) {
               <th className='text-left p-4 font-medium'>Invitados</th>
               <th className='text-left p-4 font-medium'>Categoría</th>
               <th className='text-left p-4 font-medium'>Estado</th>
-              <th className='text-left p-4 font-medium'>Código</th>
+              <th className='text-left p-4 font-medium'>Invitación</th>
             </tr>
           </thead>
           <tbody className='divide-y divide-surface-container-low'>
@@ -133,14 +160,17 @@ export function GuestTable({ guests, onRowClick }) {
                     </Badge>
                   </td>
                   <td className='p-4'>
-                    <Badge variant={getConfirmoBadge(inv.confirmo)}>
-                      {getConfirmoLabel(inv.confirmo)}
+                    <Badge variant={confirmoVariant(inv.confirmo)}>
+                      {confirmoLabel(inv.confirmo)}
                     </Badge>
                   </td>
                   <td className='p-4'>
-                    <code className='text-xs bg-surface-container-low px-2 py-1 rounded'>
-                      {inv.codigo}
-                    </code>
+                    <div className='flex items-center gap-1.5'>
+                      <code className='text-xs bg-surface-container-low px-2 py-1 rounded font-mono'>
+                        {inv.codigo}
+                      </code>
+                      <CopyButton url={`${INVITE_BASE}/${inv.codigo}`} />
+                    </div>
                   </td>
                 </tr>
               )
