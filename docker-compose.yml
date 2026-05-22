@@ -1,0 +1,13 @@
+services:
+  wedding:
+    build: .
+    container_name: wedding
+    restart: unless-stopped
+    ports:
+      - "8086:8000"
+    environment:
+      - CSV_PATH=invitados.csv
+    volumes:
+      - ./invitados.csv:/app/invitados.csv
+      - ./config.json:/app/config.json
+      - ./backend/app/static:/app/app/static
