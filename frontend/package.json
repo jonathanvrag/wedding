@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.60.4",
     "clsx": "^2.1.0",
     "framer-motion": "^11.0.0",
     "leaflet": "^1.9.4",
