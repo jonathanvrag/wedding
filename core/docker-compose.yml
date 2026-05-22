@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: core/Dockerfile.backend
+    container_name: wedding-backend
+    restart: unless-stopped
+    environment:
+      - CSV_PATH=/app/invitados.csv
+    volumes:
+      - ../invitados.csv:/app/invitados.csv
+      - ../config.json:/app/config.json
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: core/Dockerfile.frontend
+    container_name: wedding-frontend
+    restart: unless-stopped
+    ports:
+      - "8086:80"
+    depends_on:
+      - backend
