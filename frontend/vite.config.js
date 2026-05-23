@@ -15,5 +15,19 @@ export default defineConfig({
         changeOrigin: true
       }
     }
-  }
+  },
+  build: {
+    sourcemap: false,
+    target: 'es2020',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          motion: ['framer-motion'],
+          ui: ['lucide-react'],
+          map: ['leaflet', 'react-leaflet'],
+        },
+      },
+    },
+  },
 })

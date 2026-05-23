@@ -4,6 +4,7 @@
  */
 import { motion } from 'framer-motion';
 import { Flower2 } from 'lucide-react';
+import logoSrc from '../../assets/logo.png';
 
 export function HeroSection({
   guestName,
@@ -28,7 +29,7 @@ export function HeroSection({
 
         <div className='mb-8 inline-block'>
           <img
-            src='/src/assets/logo.webp'
+            src={logoSrc}
             alt='Logo'
             className='w-36 h-36 object-contain mx-auto'
           />
