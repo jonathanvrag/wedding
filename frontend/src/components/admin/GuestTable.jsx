@@ -8,7 +8,7 @@
  */
 import { useState } from 'react'
 import { Badge } from '../ui/Badge'
-import { Copy, Check } from 'lucide-react'
+import { Copy, Check, Pencil } from 'lucide-react'
 
 const INVITE_BASE = 'https://invitacion.jonathanvera.dev'
 
@@ -94,7 +94,7 @@ function CopyButton({ url }) {
   )
 }
 
-export function GuestTable({ guests, onRowClick }) {
+export function GuestTable({ guests, onRowClick, onEdit }) {
   const getCategoriaBadge = (cat) => {
     const badges = {
       'Familia del Novio': 'primary',
@@ -123,6 +123,7 @@ export function GuestTable({ guests, onRowClick }) {
               <th className='text-left p-4 font-medium'>Categoría</th>
               <th className='text-left p-4 font-medium'>Estado</th>
               <th className='text-left p-4 font-medium'>Invitación</th>
+              <th className='text-right p-4 font-medium w-16'>Acciones</th>
             </tr>
           </thead>
           <tbody className='divide-y divide-surface-container-low'>
@@ -171,6 +172,18 @@ export function GuestTable({ guests, onRowClick }) {
                       </code>
                       <CopyButton url={`${INVITE_BASE}/${inv.codigo}`} />
                     </div>
+                  </td>
+                  <td className='p-4 text-right'>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onEdit?.(inv)
+                      }}
+                      className='p-1.5 rounded-md transition-colors hover:bg-surface-container-low text-secondary hover:text-primary'
+                      title='Editar invitado'
+                    >
+                      <Pencil className='w-3.5 h-3.5' />
+                    </button>
                   </td>
                 </tr>
               )

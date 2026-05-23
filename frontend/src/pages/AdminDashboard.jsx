@@ -16,6 +16,7 @@ import { FilterInput, FilterSelect } from '../components/admin/Filters'
 import { GuestTable } from '../components/admin/GuestTable'
 import { Pagination } from '../components/admin/Pagination'
 import { AddGuestModal } from '../components/admin/AddGuestModal'
+import { EditGuestModal } from '../components/admin/EditGuestModal'
 
 // Constantes
 const ITEMS_PER_PAGE = 10
@@ -78,7 +79,20 @@ function useAdminData(token) {
     return res.json()
   }
 
-  return { invitados, stats, loading, error, fetchData, addGuest }
+  const updateGuest = async (guestId, guestData) => {
+    const res = await fetch(`${API_URL}/admin/invitados/${guestId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(guestData),
+    })
+    if (!res.ok) throw new Error('Error al actualizar')
+    return res.json()
+  }
+
+  return { invitados, stats, loading, error, fetchData, addGuest, updateGuest }
 }
 
 export default function AdminDashboard() {
@@ -87,13 +101,15 @@ export default function AdminDashboard() {
 
   // Estado
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedGuest, setSelectedGuest] = useState(null)
   const [filtroCategoria, setFiltroCategoria] = useState('')
   const [filtroConfirmo, setFiltroConfirmo] = useState('')
   const [search, setSearch] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
 
   // Hook de datos
-  const { invitados, stats, loading, error, fetchData, addGuest } =
+  const { invitados, stats, loading, error, fetchData, addGuest, updateGuest } =
     useAdminData(token)
 
   // Efecto inicial
@@ -136,6 +152,23 @@ export default function AdminDashboard() {
       await addGuest(guestData)
       toast('Invitado agregado correctamente')
       setShowAddModal(false)
+      fetchData()
+    } catch (err) {
+      toast(err.message, 'error')
+    }
+  }
+
+  const handleEditGuest = (guest) => {
+    setSelectedGuest(guest)
+    setShowEditModal(true)
+  }
+
+  const handleUpdateGuest = async (guestData) => {
+    try {
+      await updateGuest(selectedGuest.id, guestData)
+      toast('Invitado actualizado correctamente')
+      setShowEditModal(false)
+      setSelectedGuest(null)
       fetchData()
     } catch (err) {
       toast(err.message, 'error')
@@ -219,7 +252,7 @@ export default function AdminDashboard() {
             No hay invitados que coincidan con los filtros
           </div>
         ) : (
-          <GuestTable guests={paginatedGuests} />
+          <GuestTable guests={paginatedGuests} onEdit={handleEditGuest} />
         )}
 
         {/* Pagination */}
@@ -237,6 +270,15 @@ export default function AdminDashboard() {
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
         onSubmit={handleAddGuest}
+      />
+      <EditGuestModal
+        isOpen={showEditModal}
+        guest={selectedGuest}
+        onClose={() => {
+          setShowEditModal(false)
+          setSelectedGuest(null)
+        }}
+        onSubmit={handleUpdateGuest}
       />
       <ToastContainer />
     </div>
