@@ -2,8 +2,8 @@
  * HeroSection - Sección hero de la invitación
  * El punto focal visual con los nombres de los novios
  */
-import { motion } from 'framer-motion'
-import { Flower2 } from 'lucide-react'
+import { motion } from 'framer-motion';
+import { Flower2 } from 'lucide-react';
 
 export function HeroSection({
   guestName,
@@ -20,15 +20,18 @@ export function HeroSection({
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, ease: 'easeOut' }}
-        className='relative z-10 text-center max-w-4xl px-6'
-      >
+        className='relative z-10 text-center max-w-4xl px-6'>
         {/* Decorative flower - behind navbar */}
         <div className='absolute -top-16 -left-16 opacity-10 pointer-events-none'>
           <Flower2 size={250} className='text-primary stroke-[0.5px]' />
         </div>
-        
+
         <div className='mb-8 inline-block'>
-          <Flower2 className='text-primary w-16 h-16 stroke-[1px]' />
+          <img
+            src='/src/assets/logo.webp'
+            alt='Logo'
+            className='w-36 h-36 object-contain mx-auto'
+          />
         </div>
         <h1 className='text-6xl md:text-8xl lg:text-9xl font-serif text-primary mb-8 tracking-tight'>
           {nombresNovios || 'Jonathan & Valentina'}
@@ -45,13 +48,14 @@ export function HeroSection({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() =>
-            document.getElementById('rsvp')?.scrollIntoView({ behavior: 'smooth' })
+            document
+              .getElementById('rsvp')
+              ?.scrollIntoView({ behavior: 'smooth' })
           }
-          className='bg-primary text-surface px-14 py-6 rounded-full text-sm font-bold tracking-widest uppercase shadow-xl hover:shadow-2xl transition-all duration-300 inline-block'
-        >
+          className='bg-primary text-surface px-14 py-6 rounded-full text-sm font-bold tracking-widest uppercase shadow-xl hover:shadow-2xl transition-all duration-300 inline-block'>
           Confirmar asistencia
         </motion.button>
       </motion.div>
     </section>
-  )
+  );
 }

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://invitacion.jonathanvera.dev/sitemap.xml
+Host: https://invitacion.jonathanvera.dev
