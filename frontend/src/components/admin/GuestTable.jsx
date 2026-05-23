@@ -10,7 +10,7 @@ import { useState } from 'react'
 import { Badge } from '../ui/Badge'
 import { Copy, Check } from 'lucide-react'
 
-const INVITE_BASE = 'https://invitacion.jonthanvera.dev'
+const INVITE_BASE = 'https://invitacion.jonathanvera.dev'
 
 function parseList(str) {
   if (!str) return []
