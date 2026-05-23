@@ -82,7 +82,7 @@ export function AccommodationSection({ hoteles }) {
           Alojamiento
         </h2>
         <p className='text-lg text-tertiary font-light max-w-md mx-auto'>
-          Hemos seleccionado estos hoteles cercanos para vuestra comodidad.
+          Hemos seleccionado estos hoteles cercanos para su comodidad.
         </p>
       </div>
 
