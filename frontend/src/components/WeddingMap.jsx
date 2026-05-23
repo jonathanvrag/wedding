@@ -113,7 +113,7 @@ export function WeddingMap({ ceremony, reception, className = '' }) {
         <FitBounds markers={markers} />
         <RecenterControl markers={markers} />
 
-        {ceremony && (
+        {/* {ceremony && (
           <Marker
             position={ceremony.coords}
             icon={createMarkerIcon('church')}
@@ -134,7 +134,7 @@ export function WeddingMap({ ceremony, reception, className = '' }) {
               </div>
             </Popup>
           </Marker>
-        )}
+        )} */}
 
         {reception && (
           <Marker

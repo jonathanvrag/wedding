@@ -325,7 +325,7 @@ export function RsvpSection({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 disabled={submitting || cantidad === 0}
-                className='w-full md:w-auto px-24 py-6 bg-surface text-primary rounded-full font-bold uppercase tracking-widest text-sm shadow-2xl transition-all disabled:opacity-30'
+                className='w-full md:w-auto px-24 py-6 bg-surface text-primary rounded-full font-bold uppercase tracking-widest text-sm shadow-2xl transition-all disabled:opacity-30 text-center'
               >
                 {submitting ? 'Enviando...' : 'Enviar Confirmación'}
               </motion.button>

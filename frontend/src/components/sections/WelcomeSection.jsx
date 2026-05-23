@@ -7,7 +7,7 @@ import { Section } from '../ui/Section'
 import { Flower2 } from 'lucide-react'
 
 export function WelcomeSection({
-  mensaje = 'Queridos amigos y familia, no hay nada que nos haga más ilusión que compartir el día más importante de nuestras vidas con las personas que nos han visto crecer y amarnos. Queremos que esta celebración sea un reflejo de nuestra gratitud por vuestro cariño incondicional. Os esperamos paraivar por el amor, la risa y el futuro.',
+  mensaje = 'Queridos amigos y familia, no hay nada que nos haga más ilusión que compartir el día más importante de nuestras vidas con las personas que nos han visto crecer y amarnos. Queremos que esta celebración sea un reflejo de nuestra gratitud por su cariño incondicional. Los esperamos para celebrar por el amor, la risa y el futuro.',
 }) {
   return (
     <Section id='historia' className='bg-surface-container-low relative'>
