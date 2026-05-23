@@ -8,9 +8,21 @@
  */
 import { useState } from 'react'
 import { Badge } from '../ui/Badge'
-import { Copy, Check, Pencil } from 'lucide-react'
+import { Copy, Check, Pencil, MessageCircle } from 'lucide-react'
 
 const INVITE_BASE = 'https://invitacion.jonathanvera.dev'
+
+const MESSAGE_TEMPLATE = (url) => `Hola!
+
+Nos emociona muchísimo compartir con ustedes el inicio de nuestra historia juntos. Queremos invitarlos de manera muy especial a la celebración de nuestra boda el próximo 8 de agosto.
+
+Con mucho amor, hemos preparado una invitación digital donde encontrarán toda la información del evento, código de vestimenta y el espacio para confirmar sus cupos:
+
+${url}
+
+¡Los esperamos para celebrar juntos! 🤍
+
+*— Jonathan & Duniechka *`
 
 function parseList(str) {
   if (!str) return []
@@ -58,6 +70,39 @@ function PersonBadge({ name, status }) {
       {status === 'pending' && '? '}
       {name}
     </span>
+  )
+}
+
+function CopyMessageButton({ url }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async (e) => {
+    e.stopPropagation()
+    const text = MESSAGE_TEMPLATE(url)
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      const input = document.createElement('textarea')
+      input.value = text
+      document.body.appendChild(input)
+      input.select()
+      document.execCommand('copy')
+      document.body.removeChild(input)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
+
+  return (
+    <button
+      onClick={handleCopy}
+      className='p-1.5 rounded-md transition-colors hover:bg-surface-container-low text-secondary hover:text-primary'
+      title='Copiar mensaje'
+    >
+      {copied ? <Check className='w-3.5 h-3.5 text-success' /> : <MessageCircle className='w-3.5 h-3.5' />}
+    </button>
   )
 }
 
@@ -174,16 +219,19 @@ export function GuestTable({ guests, onRowClick, onEdit }) {
                     </div>
                   </td>
                   <td className='p-4 text-right'>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onEdit?.(inv)
-                      }}
-                      className='p-1.5 rounded-md transition-colors hover:bg-surface-container-low text-secondary hover:text-primary'
-                      title='Editar invitado'
-                    >
-                      <Pencil className='w-3.5 h-3.5' />
-                    </button>
+                    <div className='flex items-center justify-end gap-1'>
+                      <CopyMessageButton url={`${INVITE_BASE}/${inv.codigo}`} />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onEdit?.(inv)
+                        }}
+                        className='p-1.5 rounded-md transition-colors hover:bg-surface-container-low text-secondary hover:text-primary'
+                        title='Editar invitado'
+                      >
+                        <Pencil className='w-3.5 h-3.5' />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               )
