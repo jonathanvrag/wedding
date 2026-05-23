@@ -19,13 +19,14 @@ export function Navigation({ onRsvpClick, nombresNovios = 'Jonathan & Valentina'
   return (
     <nav className='fixed top-0 w-full z-50 glass-nav border-b border-primary/5'>
       <div className='flex justify-between items-center px-8 py-5 max-w-7xl mx-auto'>
-        <motion.div
+        <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className='text-3xl font-serif italic text-primary'
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className='text-3xl font-serif italic text-primary text-left'
         >
           {nombresNovios}
-        </motion.div>
+        </motion.button>
 
         <div className='hidden md:flex space-x-10 items-center'>
           {navLinks.map(link => (
