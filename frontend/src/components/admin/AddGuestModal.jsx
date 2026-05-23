@@ -14,13 +14,14 @@ export function AddGuestModal({ isOpen, onClose, onSubmit }) {
     prioridad: 'Importante',
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const payload = {
       ...newGuest,
       acompanantes: JSON.stringify(newGuest.acompanantes.filter(Boolean)),
     }
-    onSubmit(payload)
+    await onSubmit(payload)
+    resetForm()
   }
 
   const resetForm = () => {
