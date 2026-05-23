@@ -42,8 +42,8 @@ export function HeroSection({
         </p>
         <div className='h-px w-32 bg-primary/30 mx-auto mb-12' />
         <p className='text-xl md:text-2xl font-light text-secondary mb-16 max-w-2xl mx-auto leading-relaxed'>
-          "Donde hay amor, hay vida." — El comienzo de nuestra historia juntos
-          bajo el sol del verano.
+          <span className='italic font-light'>"Andábamos sin buscarnos, pero sabiendo<br/>que andábamos para encontrarnos."</span>
+          <span className='block text-base md:text-lg mt-4 tracking-wider'>— Julio Cortázar</span>
         </p>
         <motion.button
           whileHover={{ scale: 1.05 }}
