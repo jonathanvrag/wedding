@@ -217,7 +217,12 @@ export default function AdminDashboard() {
         {/* Stats */}
         <div className='grid grid-cols-2 md:grid-cols-3 gap-4 mb-8'>
           <StatCard label='Total' value={stats.total} color='primary' />
-          <StatCard label='Completados' value={(stats.confirmados || 0) + (stats.rechazados || 0)} color='success' />
+          <StatCard
+            label='Completados'
+            value={(stats.confirmados || 0) + (stats.rechazados || 0)}
+            color='success'
+            subtitle={`✓ ${stats.confirmados || 0} confirmados · ✗ ${stats.rechazados || 0} rechazados`}
+          />
           <StatCard label='Pendientes' value={stats.pendientes} color='warning' />
         </div>
 

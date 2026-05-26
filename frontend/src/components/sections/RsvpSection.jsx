@@ -84,19 +84,13 @@ export function RsvpSection({
       .filter(([, va]) => va)
       .map(([name]) => name)
 
-    if (asistentesList.length === 0) {
-      setError('Seleccioná al menos una persona que confirma asistencia.')
-      setSubmitting(false)
-      return
-    }
-
     try {
       const res = await fetch(`${API_URL}/invitacion/rsvp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           codigo,
-          confirmo: 'si',
+          confirmo: asistentesList.length === 0 ? 'no' : 'si',
           cantidad: asistentesList.length,
           asistentes: JSON.stringify(asistentesList),
           restricciones: restricciones || null,
@@ -226,9 +220,11 @@ export function RsvpSection({
             <Flower2 className='mx-auto mb-8 w-20 h-20' />
             <h3 className='text-4xl font-serif mb-6'>¡Gracias!</h3>
             <p className='text-xl opacity-70'>
-              {cantidad === 1
-                ? 'Tu asistencia ha sido confirmada.'
-                : `Ustedes ${cantidad} han sido confirmados.`}
+              {cantidad === 0
+                ? 'Hemos registrado que no podrán asistir.'
+                : cantidad === 1
+                  ? 'Tu asistencia ha sido confirmada.'
+                  : `Ustedes ${cantidad} han sido confirmados.`}
             </p>
             <div className='flex flex-wrap justify-center gap-2 mt-6'>
               {Object.entries(asistentes)
@@ -324,7 +320,7 @@ export function RsvpSection({
                 type='submit'
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                disabled={submitting || cantidad === 0}
+                disabled={submitting}
                 className='w-full md:w-auto px-24 py-6 bg-surface text-primary rounded-full font-bold uppercase tracking-widest text-sm shadow-2xl transition-all disabled:opacity-30 text-center'
               >
                 {submitting ? 'Enviando...' : 'Enviar Confirmación'}

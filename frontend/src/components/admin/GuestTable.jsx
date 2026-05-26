@@ -37,9 +37,12 @@ function parseList(str) {
 /**
  * Estado individual de cada persona
  */
-function getPersonStatus(name, confirmados, hasData) {
-  if (!hasData) return 'pending';
-  return confirmados.includes(name) ? 'confirmed' : 'declined';
+function getPersonStatus(name, confirmados, confirmo) {
+  if (confirmo === 'no') return 'declined';
+  if (confirmo === 'si') {
+    return confirmados.includes(name) ? 'confirmed' : 'declined';
+  }
+  return 'pending';
 }
 
 const BG_CLASSES = {
@@ -156,11 +159,15 @@ export function GuestTable({ guests, onRowClick, onEdit }) {
   };
 
   const confirmoVariant = confirmo => {
-    return confirmo === 'pendiente' ? 'default' : 'success';
+    if (confirmo === 'no') return 'error';
+    if (confirmo === 'si') return 'success';
+    return 'default';
   };
 
   const confirmoLabel = confirmo => {
-    return confirmo === 'pendiente' ? 'Pendiente' : 'Completado';
+    if (confirmo === 'no') return 'Rechazado';
+    if (confirmo === 'si') return 'Completado';
+    return 'Pendiente';
   };
 
   return (
@@ -180,8 +187,6 @@ export function GuestTable({ guests, onRowClick, onEdit }) {
             {guests.map(inv => {
               const comps = parseList(inv.acompanantes);
               const confirmados = parseList(inv.confirmados);
-              const hasData = confirmados.length > 0;
-
               // Todas las personas: titular + acompañantes
               const personas = [
                 { name: inv.nombre, isMain: true },
@@ -199,7 +204,7 @@ export function GuestTable({ guests, onRowClick, onEdit }) {
                         <PersonBadge
                           key={i}
                           name={p.name}
-                          status={getPersonStatus(p.name, confirmados, hasData)}
+                          status={getPersonStatus(p.name, confirmados, inv.confirmo)}
                         />
                       ))}
                     </div>
