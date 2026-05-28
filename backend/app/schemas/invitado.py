@@ -80,6 +80,13 @@ class InvitadoResponse(BaseModel):
     fecha_confirmacion: Optional[str] = None
 
 
+class ConfirmacionUpdate(BaseModel):
+    """Admin update of confirmation status."""
+    confirmo: str  # "si", "no", or "pendiente"
+    cantidad: int = 0
+    confirmados: str = ""  # JSON array of confirmed attendee names
+
+
 class LoginRequest(BaseModel):
     """Admin login request."""
     password: str

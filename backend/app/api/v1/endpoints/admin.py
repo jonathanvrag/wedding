@@ -15,7 +15,8 @@ from app.schemas.invitado import (
     LoginResponse,
     NuevoInvitado,
     InvitadoResponse,
-    StatsResponse
+    StatsResponse,
+    ConfirmacionUpdate
 )
 from app.services.invitado_service import invitado_service
 
@@ -100,6 +101,27 @@ async def update_invitado(
     """Update guest."""
     try:
         return invitado_service.update(guest_id, updates)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
+
+
+@router.patch("/invitados/{guest_id}/confirmacion", response_model=InvitadoResponse)
+async def update_confirmacion(
+    guest_id: str,
+    update: ConfirmacionUpdate,
+    current_admin: str = Depends(get_current_admin)
+):
+    """Update guest confirmation status (admin)."""
+    try:
+        return invitado_service.update_confirmacion(
+            guest_id=guest_id,
+            confirmo=update.confirmo,
+            cantidad=update.cantidad,
+            confirmados=update.confirmados
+        )
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

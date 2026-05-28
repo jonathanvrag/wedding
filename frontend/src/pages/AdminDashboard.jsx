@@ -92,7 +92,20 @@ function useAdminData(token) {
     return res.json()
   }
 
-  return { invitados, stats, loading, error, fetchData, addGuest, updateGuest }
+  const updateConfirmacion = async (guestId, confirmacionData) => {
+    const res = await fetch(`${API_URL}/admin/invitados/${guestId}/confirmacion`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(confirmacionData),
+    })
+    if (!res.ok) throw new Error('Error al actualizar estado')
+    return res.json()
+  }
+
+  return { invitados, stats, loading, error, fetchData, addGuest, updateGuest, updateConfirmacion }
 }
 
 export default function AdminDashboard() {
@@ -109,7 +122,7 @@ export default function AdminDashboard() {
   const [currentPage, setCurrentPage] = useState(1)
 
   // Hook de datos
-  const { invitados, stats, loading, error, fetchData, addGuest, updateGuest } =
+  const { invitados, stats, loading, error, fetchData, addGuest, updateGuest, updateConfirmacion } =
     useAdminData(token)
 
   // Efecto inicial
@@ -167,6 +180,18 @@ export default function AdminDashboard() {
     try {
       await updateGuest(selectedGuest.id, guestData)
       toast('Invitado actualizado correctamente')
+      setShowEditModal(false)
+      setSelectedGuest(null)
+      fetchData()
+    } catch (err) {
+      toast(err.message, 'error')
+    }
+  }
+
+  const handleUpdateConfirmacion = async (confirmacionData) => {
+    try {
+      await updateConfirmacion(selectedGuest.id, confirmacionData)
+      toast('Estado de confirmación actualizado')
       setShowEditModal(false)
       setSelectedGuest(null)
       fetchData()
@@ -284,6 +309,7 @@ export default function AdminDashboard() {
           setSelectedGuest(null)
         }}
         onSubmit={handleUpdateGuest}
+        onUpdateConfirmacion={handleUpdateConfirmacion}
       />
       <ToastContainer />
     </div>

@@ -221,6 +221,37 @@ class InvitadoService:
             fecha_confirmacion=row['fecha_confirmacion'] or None
         )
     
+    def update_confirmacion(
+        self, guest_id: str, confirmo: str, cantidad: int = 0, confirmados: str = ""
+    ) -> InvitadoResponse:
+        """Update confirmation status (admin)."""
+        df = self._load_csv()
+        mask = df['id'] == guest_id
+
+        if not mask.any():
+            raise ValueError("Invitado no encontrado")
+
+        df.loc[mask, 'confirmo'] = confirmo
+        df.loc[mask, 'cantidad'] = cantidad
+        df.loc[mask, 'confirmados'] = confirmados
+        df.loc[mask, 'fecha_confirmacion'] = pd.Timestamp.now().isoformat()
+
+        self._save_csv(df)
+
+        row = df[mask].iloc[0]
+        return InvitadoResponse(
+            id=row['id'],
+            codigo=row['codigo'],
+            nombre=row['nombre'],
+            categoria=row['categoria'],
+            acompanantes=str(row.get('acompanantes', '')) if str(row.get('acompanantes', '')) not in ('nan', 'None', '') else '',
+            confirmados=str(row.get('confirmados', '')) if str(row.get('confirmados', '')) not in ('nan', 'None', '') else '',
+            prioridad=row['prioridad'],
+            confirmo=row['confirmo'],
+            cantidad=row['cantidad'],
+            fecha_confirmacion=row['fecha_confirmacion'] or None
+        )
+
     def delete(self, guest_id: str) -> bool:
         """Delete guest."""
         df = self._load_csv()
