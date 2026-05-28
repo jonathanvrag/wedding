@@ -109,6 +109,10 @@ class InvitadoService:
         if not mask.any():
             raise ValueError("Invitado no encontrado")
         
+        estado_actual = df.loc[mask, 'confirmo'].values[0]
+        if estado_actual not in ('', 'pendiente'):
+            raise ValueError("Ya has respondido a esta invitación")
+        
         # Update values
         df.loc[mask, 'confirmo'] = confirmo
         df.loc[mask, 'cantidad'] = cantidad

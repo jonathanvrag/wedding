@@ -29,7 +29,8 @@ export function RsvpSection({
   acompanantes = '[]',
   confirmados = '',
   fechaLimite = '1 de Mayo',
-  yaConfirmo = false,
+  yaRespondio = false,
+  confirmo = null,
   fechaLimiteISO = null,
 }) {
   const comps = parseList(acompanantes)
@@ -53,11 +54,8 @@ export function RsvpSection({
   const [error, setError] = useState(null)
   const [expired, setExpired] = useState(false)
 
-  // Si ya confirmó Y no está re-enviando, mostrar pantalla de "ya confirmaste"
-  const allConfirmed =
-    yaConfirmo &&
-    !submitted &&
-    Object.values(asistentes).some(Boolean)
+  // Si ya respondió (si o no), mostrar pantalla correspondiente
+  const allConfirmed = yaRespondio && !submitted
 
   // Verificar fecha límite
   useEffect(() => {
@@ -113,7 +111,7 @@ export function RsvpSection({
     }
   }
 
-  // Estado: ya confirmó anteriormente
+  // Estado: ya respondió anteriormente (si o no)
   if (allConfirmed && !submitted) {
     const asistentesList = Object.entries(asistentes)
       .filter(([, va]) => va)
@@ -122,31 +120,52 @@ export function RsvpSection({
     return (
       <Section id='rsvp' className='bg-primary text-surface'>
         <div className='max-w-4xl mx-auto relative z-10'>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className='text-center p-20 bg-surface-container-lowest/5 rounded-[2rem]'
-          >
-            <CheckCircle className='mx-auto mb-8 w-20 h-20 text-green-400' />
-            <h3 className='text-4xl font-serif mb-6'>¡Ya Confirmaste!</h3>
-            <p className='text-xl opacity-70 mb-4'>
-              Ya nos confirmaste tu asistencia.
-            </p>
-            <div className='flex flex-wrap justify-center gap-2 mb-6'>
-              {asistentesList.map((name) => (
-                <span
-                  key={name}
-                  className='inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-surface/10 text-surface text-sm'
-                >
-                  <User className='w-3.5 h-3.5' />
-                  {name}
-                </span>
-              ))}
-            </div>
-            <p className='text-lg opacity-50'>
-              Si necesitas modificar algo, contactanos directamente.
-            </p>
-          </motion.div>
+          {confirmo === 'si' ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className='text-center p-20 bg-surface-container-lowest/5 rounded-[2rem]'
+            >
+              <CheckCircle className='mx-auto mb-8 w-20 h-20 text-green-400' />
+              <h3 className='text-4xl font-serif mb-6'>¡Ya Confirmaste!</h3>
+              <p className='text-xl opacity-70 mb-4'>
+                Ya nos confirmaste tu asistencia.
+              </p>
+              {asistentesList.length > 0 && (
+                <div className='flex flex-wrap justify-center gap-2 mb-6'>
+                  {asistentesList.map((name) => (
+                    <span
+                      key={name}
+                      className='inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-surface/10 text-surface text-sm'
+                    >
+                      <User className='w-3.5 h-3.5' />
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <p className='text-lg opacity-50'>
+                Si necesitas modificar algo, contactanos directamente.
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className='text-center p-20 bg-surface-container-lowest/5 rounded-[2rem]'
+            >
+              <div className='mx-auto mb-8 w-20 h-20 rounded-full bg-surface/10 flex items-center justify-center'>
+                <Mail className='w-10 h-10 opacity-70' />
+              </div>
+              <h3 className='text-4xl font-serif mb-6'>Respuesta Registrada</h3>
+              <p className='text-xl opacity-70 mb-4'>
+                Hemos registrado que no podrás asistir.
+              </p>
+              <p className='text-lg opacity-50'>
+                Si necesitas modificar algo, contactanos directamente.
+              </p>
+            </motion.div>
+          )}
         </div>
 
         <div className='absolute -top-40 -left-40 opacity-10 pointer-events-none'>
@@ -208,6 +227,11 @@ export function RsvpSection({
           <p className='font-light text-xl opacity-70 max-w-lg mx-auto leading-relaxed'>
             Por favor, confírmanos antes del {fechaLimite} para poder organizar
             todos los detalles con cariño.
+          </p>
+          <p className='font-light text-base opacity-50 max-w-md mx-auto leading-relaxed mt-4'>
+            Si vas a asistir, selecciona tu nombre (y el de tus acompañantes si aplica) y
+            dale a <strong>Enviar Confirmación</strong>. Si no puedes asistir,
+            simplemente dale al botón sin seleccionar a nadie.
           </p>
         </div>
 

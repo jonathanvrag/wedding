@@ -155,7 +155,8 @@ export default function InvitationPage() {
         acompanantes={invitacion.acompanantes}
         confirmados={invitacion.confirmados}
         fechaLimite={formatDateToSpanish(invitacion.fecha_limite_confirmacion)}
-        yaConfirmo={invitacion.confirmo === 'si'}
+        yaRespondio={invitacion.confirmo === 'si' || invitacion.confirmo === 'no'}
+        confirmo={invitacion.confirmo}
         fechaLimiteISO={invitacion.fecha_limite_confirmacion}
       />
       
