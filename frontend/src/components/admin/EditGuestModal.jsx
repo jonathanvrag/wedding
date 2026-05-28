@@ -169,11 +169,15 @@ export function EditGuestModal({ isOpen, guest, onClose, onSubmit, onUpdateConfi
       updated[index] = value
       return { ...prev, acompanantes: updated }
     })
-    if (oldName && oldName !== value) {
+    if (oldName !== value) {
       setPersonStatus((prev) => {
         const next = { ...prev }
-        next[value] = next[oldName] || 'pendiente'
-        delete next[oldName]
+        if (oldName) {
+          next[value] = next[oldName]
+          delete next[oldName]
+        } else {
+          next[value] = 'pendiente'
+        }
         return next
       })
     }
