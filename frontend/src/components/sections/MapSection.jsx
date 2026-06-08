@@ -75,7 +75,7 @@ export function MapSection({
                 <h3 className='font-serif text-lg text-primary mb-1'>La Ceremonia</h3>
                 <p className='text-sm text-secondary font-medium'>{lugarCeremonia}</p>
                 <p className='text-xs text-tertiary mt-1'>{direccionCeremonia}</p>
-                {/* {ceremonyCoords && (
+                {ceremonyCoords && (
                   <a
                     href={`https://www.google.com/maps/dir/?api=1&destination=${ceremonyCoords[0]},${ceremonyCoords[1]}`}
                     target='_blank'
@@ -84,7 +84,7 @@ export function MapSection({
                   >
                     Obtener indicaciones →
                   </a>
-                )} */}
+                )}
               </div>
             </div>
           </div>
