@@ -76,6 +76,7 @@ export function EditGuestModal({ isOpen, guest, onClose, onSubmit, onUpdateConfi
     categoria: 'Amigos de la novia',
     acompanantes: [],
     prioridad: 'Importante',
+    fecha_limite: '',
   })
 
   const [personStatus, setPersonStatus] = useState({})
@@ -96,6 +97,7 @@ export function EditGuestModal({ isOpen, guest, onClose, onSubmit, onUpdateConfi
         categoria: guest.categoria || 'Amigos de la novia',
         acompanantes: comps,
         prioridad: guest.prioridad || 'Importante',
+        fecha_limite: guest.fecha_limite || '',
       })
       setPersonStatus(initial)
     }
@@ -270,6 +272,19 @@ export function EditGuestModal({ isOpen, guest, onClose, onSubmit, onUpdateConfi
                         <option value='opcional'>Opcional</option>
                       </select>
                     </div>
+                  </div>
+                  <div>
+                    <label className='block text-sm text-secondary mb-1'>
+                      Fecha límite de confirmación
+                    </label>
+                    <input
+                      type='date'
+                      value={form.fecha_limite}
+                      onChange={(e) =>
+                        setForm({ ...form, fecha_limite: e.target.value })
+                      }
+                      className='input'
+                    />
                   </div>
                 </div>
 

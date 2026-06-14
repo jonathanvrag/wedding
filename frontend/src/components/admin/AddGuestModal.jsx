@@ -2,9 +2,10 @@
  * AddGuestModal - Modal para agregar nuevos invitados
  * Permite agregar múltiples acompañantes de forma individual
  */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, X } from 'lucide-react'
+import { API_URL } from '../../lib/utils'
 
 export function AddGuestModal({ isOpen, onClose, onSubmit }) {
   const [newGuest, setNewGuest] = useState({
@@ -12,7 +13,27 @@ export function AddGuestModal({ isOpen, onClose, onSubmit }) {
     categoria: 'Amigos de la novia',
     acompanantes: [], // array of companion names
     prioridad: 'Importante',
+    fecha_limite: '',
   })
+
+  // Fetch the global config default for fecha_limite when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      const token = localStorage.getItem('admin_token')
+      fetch(`${API_URL}/admin/config`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((config) => {
+          const defaultDate = config?.fecha_limite_confirmacion || '2026-06-14'
+          setNewGuest((prev) => ({ ...prev, fecha_limite: defaultDate }))
+        })
+        .catch(() => {
+          // Fallback to hardcoded default if config fetch fails
+          setNewGuest((prev) => ({ ...prev, fecha_limite: '2026-06-14' }))
+        })
+    }
+  }, [isOpen])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -30,6 +51,7 @@ export function AddGuestModal({ isOpen, onClose, onSubmit }) {
       categoria: 'Amigos de la novia',
       acompanantes: [],
       prioridad: 'Importante',
+      fecha_limite: '',
     })
   }
 
@@ -134,6 +156,20 @@ export function AddGuestModal({ isOpen, onClose, onSubmit }) {
                     <option value='Importante'>Importante</option>
                     <option value='opcional'>Opcional</option>
                   </select>
+                </div>
+
+                <div>
+                  <label className='block text-sm text-secondary mb-1'>
+                    Fecha límite de confirmación
+                  </label>
+                  <input
+                    type='date'
+                    value={newGuest.fecha_limite}
+                    onChange={(e) =>
+                      setNewGuest({ ...newGuest, fecha_limite: e.target.value })
+                    }
+                    className='input'
+                  />
                 </div>
 
                 {/* Acompañantes */}

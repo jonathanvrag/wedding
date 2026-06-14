@@ -4,6 +4,7 @@ Following fastapi-templates service layer pattern.
 """
 import uuid
 import unicodedata
+from datetime import datetime, timedelta
 from typing import List, Optional
 
 import pandas as pd
@@ -25,9 +26,55 @@ class InvitadoService:
     def _load_csv(self) -> DataFrame:
         """Load and clean CSV data."""
         df = pd.read_csv(settings.CSV_PATH)
+        
+        # Auto-migration: ensure fecha_limite column exists
+        needs_save = False
+        if 'fecha_limite' not in df.columns:
+            df['fecha_limite'] = "2026-06-14"
+            needs_save = True
+        elif df['fecha_limite'].isna().any() or (df['fecha_limite'] == '').any():
+            df['fecha_limite'] = df['fecha_limite'].fillna("2026-06-14").replace('', "2026-06-14")
+            needs_save = True
+        
+        if needs_save:
+            self._save_csv(df)
+        
         # Clean NaN values
         df = df.fillna('')
         return df
+    
+    def _check_deadline(self, codigo: str) -> tuple:
+        """Check if guest's RSVP deadline has expired.
+        Returns (is_expired: bool, message: str)."""
+        df = self._load_csv()
+        row = df[df['codigo'] == codigo]
+        
+        if row.empty:
+            return False, ""
+        
+        row = row.iloc[0]
+        fecha_limite = row.get('fecha_limite', '')
+        
+        # If empty, fall back to global config
+        if not fecha_limite:
+            config = self.get_config()
+            fecha_limite = config.get('fecha_limite_confirmacion', '')
+        
+        # If both empty → no deadline restriction
+        if not fecha_limite or len(fecha_limite) != 10:
+            return False, ""
+        
+        try:
+            fecha_limite_dt = datetime.strptime(fecha_limite, '%Y-%m-%d')
+            fecha_limite_dt = fecha_limite_dt.replace(hour=23, minute=59)
+            
+            if datetime.now() > fecha_limite_dt:
+                fecha_formato = fecha_limite_dt.strftime('%d de %B de %Y')
+                return True, f"El plazo de confirmación terminó el {fecha_formato}. Ya no es posible confirmar asistencia."
+        except ValueError:
+            pass
+        
+        return False, ""
     
     def _save_csv(self, df: DataFrame):
         """Save CSV data."""
@@ -74,6 +121,8 @@ class InvitadoService:
             acompanantes=acompanantes,
             confirmados=confirmados,
             confirmo=confirmo if confirmo else None,
+            # Per-guest deadline
+            fecha_limite=row.get('fecha_limite', '') or None,
             # Include config
             nombres_novios=config.get('nombres_novios'),
             fecha_evento=config.get('fecha_evento'),
@@ -158,7 +207,8 @@ class InvitadoService:
                 prioridad=row['prioridad'],
                 confirmo=row['confirmo'],
                 cantidad=row['cantidad'],
-                fecha_confirmacion=row['fecha_confirmacion'] or None
+                fecha_confirmacion=row['fecha_confirmacion'] or None,
+                fecha_limite=row.get('fecha_limite', '')
             )
             for _, row in df.iterrows()
         ]
@@ -175,6 +225,12 @@ class InvitadoService:
         while df[df['codigo'] == nuevo_codigo].any().any():
             nuevo_codigo = self._generate_code(nuevo.nombre)
         
+        # Use provided fecha_limite or fall back to global config default
+        fecha_limite = nuevo.fecha_limite
+        if not fecha_limite:
+            config = self.get_config()
+            fecha_limite = config.get('fecha_limite_confirmacion', "2026-06-14")
+        
         new_row = {
             'id': nuevo_id,
             'codigo': nuevo_codigo,
@@ -184,7 +240,8 @@ class InvitadoService:
             'prioridad': nuevo.prioridad,
             'confirmo': 'pendiente',
             'cantidad': 0,
-            'fecha_confirmacion': None
+            'fecha_confirmacion': None,
+            'fecha_limite': fecha_limite
         }
         
         df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
@@ -204,6 +261,8 @@ class InvitadoService:
         df.loc[mask, 'categoria'] = updates.categoria
         df.loc[mask, 'acompanantes'] = updates.acompanantes
         df.loc[mask, 'prioridad'] = updates.prioridad
+        if updates.fecha_limite is not None:
+            df.loc[mask, 'fecha_limite'] = updates.fecha_limite
         
         self._save_csv(df)
         
@@ -213,12 +272,13 @@ class InvitadoService:
             codigo=row['codigo'],
             nombre=row['nombre'],
             categoria=row['categoria'],
-                            acompanantes=str(row.get('acompanantes', '')) if str(row.get('acompanantes', '')) not in ('nan', 'None', '') else '',
-                confirmados=str(row.get('confirmados', '')) if str(row.get('confirmados', '')) not in ('nan', 'None', '') else '',
+            acompanantes=str(row.get('acompanantes', '')) if str(row.get('acompanantes', '')) not in ('nan', 'None', '') else '',
+            confirmados=str(row.get('confirmados', '')) if str(row.get('confirmados', '')) not in ('nan', 'None', '') else '',
             prioridad=row['prioridad'],
             confirmo=row['confirmo'],
             cantidad=row['cantidad'],
-            fecha_confirmacion=row['fecha_confirmacion'] or None
+            fecha_confirmacion=row['fecha_confirmacion'] or None,
+            fecha_limite=row.get('fecha_limite', '')
         )
     
     def update_confirmacion(
@@ -249,7 +309,8 @@ class InvitadoService:
             prioridad=row['prioridad'],
             confirmo=row['confirmo'],
             cantidad=row['cantidad'],
-            fecha_confirmacion=row['fecha_confirmacion'] or None
+            fecha_confirmacion=row['fecha_confirmacion'] or None,
+            fecha_limite=row.get('fecha_limite', '')
         )
 
     def delete(self, guest_id: str) -> bool:

@@ -154,10 +154,10 @@ export default function InvitationPage() {
         guestName={invitacion.nombre}
         acompanantes={invitacion.acompanantes}
         confirmados={invitacion.confirmados}
-        fechaLimite={formatDateToSpanish(invitacion.fecha_limite_confirmacion)}
+        fechaLimite={formatDateToSpanish(invitacion.fecha_limite || invitacion.fecha_limite_confirmacion)}
         yaRespondio={invitacion.confirmo === 'si' || invitacion.confirmo === 'no'}
         confirmo={invitacion.confirmo}
-        fechaLimiteISO={invitacion.fecha_limite_confirmacion}
+        fechaLimiteISO={invitacion.fecha_limite || invitacion.fecha_limite_confirmacion}
       />
       
       <FaqSection faqs={invitacion.faqs} />

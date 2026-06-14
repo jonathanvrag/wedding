@@ -220,11 +220,14 @@ export default function AdminConfig() {
             className='md:col-span-2'
           />
           <Input
-            label='Fecha límite de confirmación (YYYY-MM-DD)'
+            label='Fecha límite por defecto para nuevos invitados (YYYY-MM-DD)'
             value={config?.fecha_limite_confirmacion || ''}
             onChange={(v) => updateField('fecha_limite_confirmacion', v)}
             type='date'
           />
+          <p className='text-xs text-secondary/60 md:col-span-2 -mt-2'>
+            Esta fecha se asigna automáticamente a cada invitado nuevo
+          </p>
         </ConfigSection>
 
         {/* Hoteles */}

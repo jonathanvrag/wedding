@@ -37,9 +37,12 @@ df['confirmo'] = df['Confirmo asistencia'].map({'Yes': 'si', 'No': 'no'}).fillna
 df['cantidad'] = 0
 df['fecha_confirmacion'] = None
 
+# Add fecha_limite column with default
+df['fecha_limite'] = "2026-06-14"
+
 # Keep only needed columns
 df = df[['id', 'codigo', 'nombre', 'categoria', 'es_pareja', 'nombre_pareja', 
-         'tiene_nino', 'nombres_ninos', 'prioridad', 'confirmo', 'cantidad', 'fecha_confirmacion']]
+         'tiene_nino', 'nombres_ninos', 'prioridad', 'confirmo', 'cantidad', 'fecha_confirmacion', 'fecha_limite']]
 
 # Save new CSV
 df.to_csv('../invitados.csv', index=False)

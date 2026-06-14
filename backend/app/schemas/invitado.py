@@ -35,6 +35,7 @@ class InvitacionResponse(BaseModel):
     mensaje_bienvenida: Optional[str] = None
     hoteles: Optional[str] = None
     faqs: Optional[str] = None
+    fecha_limite: Optional[str] = None  # per-guest deadline
     audio_url: Optional[str] = None
 
 
@@ -62,6 +63,7 @@ class NuevoInvitado(BaseModel):
     categoria: str = "Amigos de la novia"
     acompanantes: str = ""  # JSON array of companion names
     prioridad: str = "Importante"
+    fecha_limite: Optional[str] = None  # per-guest deadline
 
 
 class InvitadoResponse(BaseModel):
@@ -78,6 +80,7 @@ class InvitadoResponse(BaseModel):
     confirmo: str
     cantidad: int
     fecha_confirmacion: Optional[str] = None
+    fecha_limite: str = ""
 
 
 class ConfirmacionUpdate(BaseModel):
