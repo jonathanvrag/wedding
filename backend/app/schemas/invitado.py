@@ -81,6 +81,7 @@ class InvitadoResponse(BaseModel):
     cantidad: int
     fecha_confirmacion: Optional[str] = None
     fecha_limite: str = ""
+    restricciones: Optional[str] = None  # dietary restrictions / notes
 
 
 class ConfirmacionUpdate(BaseModel):

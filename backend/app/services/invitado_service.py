@@ -196,19 +196,24 @@ class InvitadoService:
             df = df[df['nombre'].str.contains(search, case=False, na=False)]
         
         # Convert to response models
+        def _clean(val):
+            s = str(val) if val is not None else ''
+            return s if s not in ('nan', 'None', '') else ''
+
         return [
             InvitadoResponse(
                 id=row['id'],
                 codigo=row['codigo'],
                 nombre=row['nombre'],
                 categoria=row['categoria'],
-                acompanantes=str(row.get('acompanantes', '')) if str(row.get('acompanantes', '')) not in ('nan', 'None', '') else '',
-                confirmados=str(row.get('confirmados', '')) if str(row.get('confirmados', '')) not in ('nan', 'None', '') else '',
+                acompanantes=_clean(row.get('acompanantes')),
+                confirmados=_clean(row.get('confirmados')),
                 prioridad=row['prioridad'],
                 confirmo=row['confirmo'],
                 cantidad=row['cantidad'],
                 fecha_confirmacion=row['fecha_confirmacion'] or None,
-                fecha_limite=row.get('fecha_limite', '')
+                fecha_limite=row.get('fecha_limite', ''),
+                restricciones=_clean(row.get('restricciones')) or None,
             )
             for _, row in df.iterrows()
         ]
@@ -278,7 +283,8 @@ class InvitadoService:
             confirmo=row['confirmo'],
             cantidad=row['cantidad'],
             fecha_confirmacion=row['fecha_confirmacion'] or None,
-            fecha_limite=row.get('fecha_limite', '')
+            fecha_limite=row.get('fecha_limite', ''),
+            restricciones=str(row.get('restricciones', '')) if str(row.get('restricciones', '')) not in ('nan', 'None', '') else None,
         )
     
     def update_confirmacion(
@@ -310,7 +316,8 @@ class InvitadoService:
             confirmo=row['confirmo'],
             cantidad=row['cantidad'],
             fecha_confirmacion=row['fecha_confirmacion'] or None,
-            fecha_limite=row.get('fecha_limite', '')
+            fecha_limite=row.get('fecha_limite', ''),
+            restricciones=str(row.get('restricciones', '')) if str(row.get('restricciones', '')) not in ('nan', 'None', '') else None,
         )
 
     def delete(self, guest_id: str) -> bool:

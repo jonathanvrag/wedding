@@ -8,7 +8,7 @@
  */
 import { useState } from 'react';
 import { Badge } from '../ui/Badge';
-import { Copy, Check, Pencil, MessageCircle } from 'lucide-react';
+import { Copy, Check, Pencil, MessageCircle, StickyNote } from 'lucide-react';
 
 const INVITE_BASE = 'https://invitacion.jonathanvera.dev';
 
@@ -179,6 +179,7 @@ export function GuestTable({ guests, onRowClick, onEdit }) {
               <th className='text-left p-4 font-medium'>Invitados</th>
               <th className='text-left p-4 font-medium'>Categoría</th>
               <th className='text-left p-4 font-medium'>Estado</th>
+              <th className='text-left p-4 font-medium'>Notas</th>
               <th className='text-left p-4 font-medium'>Invitación</th>
               <th className='text-right p-4 font-medium w-16'>Acciones</th>
             </tr>
@@ -218,6 +219,18 @@ export function GuestTable({ guests, onRowClick, onEdit }) {
                     <Badge variant={confirmoVariant(inv.confirmo)}>
                       {confirmoLabel(inv.confirmo)}
                     </Badge>
+                  </td>
+                  <td className='p-4'>
+                    {inv.restricciones ? (
+                      <div className='flex items-start gap-1.5 max-w-[200px]'>
+                        <StickyNote className='w-3.5 h-3.5 text-amber-600 mt-0.5 shrink-0' />
+                        <span className='text-sm text-primary/80 break-words leading-snug'>
+                          {inv.restricciones}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className='text-xs text-secondary/50'>—</span>
+                    )}
                   </td>
                   <td className='p-4'>
                     <div className='flex items-center gap-1.5'>
