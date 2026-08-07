@@ -3,8 +3,10 @@ Admin endpoints with authentication.
 Following fastapi-templates endpoint pattern with dependencies.
 """
 import shutil
+from datetime import datetime
 from pathlib import Path
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi.responses import Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import List, Optional
 
@@ -74,6 +76,20 @@ async def get_invitados(
         categoria=categoria,
         confirmo=confirmo,
         search=search
+    )
+
+
+@router.get("/invitados/export")
+async def export_invitados_excel(
+    current_admin: str = Depends(get_current_admin)
+):
+    """Export confirmed guests to Excel."""
+    excel_bytes = invitado_service.get_confirmados_excel()
+    filename = f"invitados_confirmados_{datetime.now().strftime('%Y%m%d')}.xlsx"
+    return Response(
+        content=excel_bytes,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
     )
 
 

@@ -120,6 +120,7 @@ export default function AdminDashboard() {
   const [filtroConfirmo, setFiltroConfirmo] = useState('')
   const [search, setSearch] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const [exporting, setExporting] = useState(false)
 
   // Hook de datos
   const { invitados, stats, loading, error, fetchData, addGuest, updateGuest, updateConfirmacion } =
@@ -205,6 +206,30 @@ export default function AdminDashboard() {
     navigate('/admin/login')
   }
 
+  const handleExportExcel = async () => {
+    try {
+      setExporting(true)
+      const res = await fetch(`${API_URL}/admin/invitados/export`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error('Error al generar el Excel')
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `invitados_confirmados_${new Date().toISOString().slice(0, 10)}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+      toast('Excel descargado correctamente')
+    } catch (err) {
+      toast(err.message, 'error')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   // Loading state
   if (loading) {
     return (
@@ -273,6 +298,13 @@ export default function AdminDashboard() {
             className='btn-primary'
           >
             + Agregar
+          </button>
+          <button
+            onClick={handleExportExcel}
+            disabled={exporting}
+            className='btn-primary'
+          >
+            {exporting ? 'Generando...' : 'Descargar Excel'}
           </button>
         </div>
 

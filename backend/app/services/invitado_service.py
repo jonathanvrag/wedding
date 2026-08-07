@@ -362,6 +362,36 @@ class InvitadoService:
             "tasa_confirmacion": round(people_confirmados / people_total * 100, 1) if people_total > 0 else 0
         }
     
+    def get_confirmados_excel(self) -> bytes:
+        """Generate an Excel file with confirmed guests (confirmo == 'si')."""
+        from io import BytesIO
+
+        df = self._load_csv()
+        confirmados = df[df['confirmo'] == 'si']
+
+        def _clean(val):
+            s = str(val) if val is not None else ''
+            return s if s not in ('nan', 'None', '') else ''
+
+        rows = [
+            {
+                "Nombre": row['nombre'],
+                "Categoría": row['categoria'],
+                "Personas": self._count_people(row),
+                "Acompañantes": _clean(row.get('acompanantes')),
+                "Confirmados": _clean(row.get('confirmados')),
+                "Código": row['codigo'],
+                "Fecha de confirmación": _clean(row.get('fecha_confirmacion')),
+                "Restricciones": _clean(row.get('restricciones')),
+            }
+            for _, row in confirmados.iterrows()
+        ]
+
+        out = BytesIO()
+        pd.DataFrame(rows).to_excel(out, index=False, sheet_name="Invitados")
+        out.seek(0)
+        return out.getvalue()
+
     def get_config(self) -> dict:
         """Get evento configuration."""
         import json
