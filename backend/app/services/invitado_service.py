@@ -363,32 +363,32 @@ class InvitadoService:
         }
     
     def get_confirmados_excel(self) -> bytes:
-        """Generate an Excel file with confirmed guests (confirmo == 'si')."""
+        """Generate an Excel file listing only the names of confirmed guests."""
+        import json
         from io import BytesIO
 
         df = self._load_csv()
         confirmados = df[df['confirmo'] == 'si']
 
-        def _clean(val):
-            s = str(val) if val is not None else ''
-            return s if s not in ('nan', 'None', '') else ''
+        def _parse_list(val):
+            if not val:
+                return []
+            try:
+                parsed = json.loads(val)
+                return [str(n) for n in parsed if n] if isinstance(parsed, list) else []
+            except (json.JSONDecodeError, TypeError):
+                return []
 
-        rows = [
-            {
-                "Nombre": row['nombre'],
-                "Categoría": row['categoria'],
-                "Personas": self._count_people(row),
-                "Acompañantes": _clean(row.get('acompanantes')),
-                "Confirmados": _clean(row.get('confirmados')),
-                "Código": row['codigo'],
-                "Fecha de confirmación": _clean(row.get('fecha_confirmacion')),
-                "Restricciones": _clean(row.get('restricciones')),
-            }
-            for _, row in confirmados.iterrows()
-        ]
+        names = []
+        for _, row in confirmados.iterrows():
+            asistentes = _parse_list(row.get('confirmados'))
+            if asistentes:
+                names.extend(asistentes)
+            else:
+                names.append(row['nombre'])
 
         out = BytesIO()
-        pd.DataFrame(rows).to_excel(out, index=False, sheet_name="Invitados")
+        pd.DataFrame({"Nombres": names}).to_excel(out, index=False, sheet_name="Invitados")
         out.seek(0)
         return out.getvalue()
 
